@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIWES Platform - Login</title>
+
+    <style>
+        /* ===================================
+           GLOBAL STYLES & RESET
+           =================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ===================================
+           LOGIN CONTAINER
+           =================================== */
+        .login-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 35px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        /* Slide-up animation for smooth entrance */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===================================
+           HEADER SECTION
+           =================================== */
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-circle {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+        }
+
+        .logo-circle svg {
+            width: 35px;
+            height: 35px;
+            fill: white;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* ===================================
+           FORM STYLES
+           =================================== */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .form-group input {
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* ===================================
+           ERROR MESSAGE
+           =================================== */
+        .error-message {
+            background: #fed7d7;
+            border: 1px solid #fc8181;
+            color: #c53030;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.3s ease;
+        }
+
+        /* Shake animation for error message */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        /* ===================================
+           LOGIN BUTTON
+           =================================== */
+        .login-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        /* ===================================
+           DEMO CREDENTIALS BOX
+           =================================== */
+        .demo-credentials {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .demo-credentials h3 {
+            font-size: 14px;
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .demo-credentials p {
+            font-size: 13px;
+            color: #4a5568;
+            margin-bottom: 6px;
+            line-height: 1.6;
+        }
+
+        .demo-credentials strong {
+            color: #2d3748;
+        }
+
+        /* ===================================
+           RESPONSIVE DESIGN
+           =================================== */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 25px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+
+            .logo-circle {
+                width: 60px;
+                height: 60px;
+            }
+
+            .logo-circle svg {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===================================
+         LOGIN CONTAINER
+         =================================== -->
+    <div class="login-container">
+        <!-- Header Section -->
+        <div class="login-header">
+            <div class="logo-circle">
+                <!-- File/Document Icon (SVG) -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                </svg>
+            </div>
+            <h1>SIWES Platform</h1>
+            <p>Student Industrial Work Experience Scheme</p>
+        </div>
+
+        <!-- Error Message (Initially Hidden) -->
+        <div class="error-message" id="errorMessage">
+            Invalid email or password. Please try again.
+        </div>
+
+        <!-- Login Form -->
+        <form class="login-form" id="loginForm">
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="login-button">Login</button>
+        </form>
+
+        <!-- Demo Credentials -->
+        <div class="demo-credentials">
+            <h3>Demo Credentials:</h3>
+            <p><strong>Student:</strong> student@example.com / student123</p>
+            <p><strong>Supervisor:</strong> supervisor@example.com / super123</p>
+            <p><strong>Admin:</strong> admin@example.com / admin123</p>
+        </div>
+    </div>
+
+    <script>
+        // ===================================
+        // MOCK USER DATABASE
+        // This simulates what would come from my Django backend
+        // ===================================
+        const MOCK_USERS = [
+            {
+                id: 1,
+                email: 'student@example.com',
+                password: 'student123',
+                role: 'student',
+                name: 'John Doe',
+                matric: 'SWE/2020/001'
+            },
+            {
+                id: 2,
+                email: 'supervisor@example.com',
+                password: 'super123',
+                role: 'supervisor',
+                name: 'Dr. Amina Mohammed',
+                matric: null
+            },
+            {
+                id: 3,
+                email: 'admin@example.com',
+                password: 'admin123',
+                role: 'admin',
+                name: 'Prof. Ibrahim Yusuf',
+                matric: null
+            }
+        ];
+
+        // ===================================
+        // GET FORM ELEMENTS
+        // ===================================
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // ===================================
+        // HANDLE FORM SUBMISSION
+        // ===================================
+        loginForm.addEventListener('submit', function (event) {
+            // Prevent default form submission (page reload)
+            event.preventDefault();
+
+            // Get values from input fields
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // Validate credentials
+            const user = validateLogin(email, password);
+
+            if (user) {
+                // Login successful
+                handleSuccessfulLogin(user);
+            } else {
+                // Login failed
+                handleFailedLogin();
+            }
+        });
+
+        // ===================================
+        // VALIDATE LOGIN CREDENTIALS
+        // This function checks if email and password match
+        // ===================================
+        function validateLogin(email, password) {
+            // Loop through mock users to find a match
+            for (let i = 0; i < MOCK_USERS.length; i++) {
+                const user = MOCK_USERS[i];
+
+                // Check if both email and password match
+                if (user.email === email && user.password === password) {
+                    return user; // Return the user object if found
+                }
+            }
+
+            return null; // Return null if no match found
+        }
+
+        // ===================================
+        // HANDLE SUCCESSFUL LOGIN
+        // ===================================
+        function handleSuccessfulLogin(user) {
+            // Hide error message if it was showing
+            errorMessage.classList.remove('show');
+
+            // Store user information in browser's sessionStorage
+            // This keeps the user logged in during the session
+            sessionStorage.setItem('currentUser', JSON.stringify(user));
+
+            // Display success message
+            alert('Login successful! Redirecting to ' + user.role + ' dashboard...');
+
+            // Redirect to appropriate dashboard based on user role
+            // NOTE: You'll need to create these HTML files later
+            if (user.role === 'student') {
+                window.location.href = 'student-dashboard.html';
+            } else if (user.role === 'supervisor') {
+                window.location.href = 'supervisor-dashboard.html';
+            } else if (user.role === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+            }
+        }
+
+        // ===================================
+        // HANDLE FAILED LOGIN
+        // ===================================
+        function handleFailedLogin() {
+            // Show error message
+            errorMessage.classList.add('show');
+
+            // Clear password field for security
+            passwordInput.value = '';
+
+            // Focus back on email field
+            emailInput.focus();
+
+            // Automatically hide error after 5 seconds
+            setTimeout(function () {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        // ===================================
+        // CHECK IF USER IS ALREADY LOGGED IN
+        // If user is already logged in, redirect them
+        // ===================================
+        window.addEventListener('load', function () {
+            const currentUser = sessionStorage.getItem('currentUser');
+
+            if (currentUser) {
+                // User is already logged in
+                const user = JSON.parse(currentUser);
+
+                // Redirect to their dashboard
+                if (user.role === 'student') {
+                    window.location.href = 'student-dashboard.html';
+                } else if (user.role === 'supervisor') {
+                    window.location.href = 'supervisor-dashboard.html';
+                } else if (user.role === 'admin') {
+                    window.location.href = 'admin-dashboard.html';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

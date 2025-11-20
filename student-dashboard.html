@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - SIWES Platform</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .user-profile {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 3px;
+        }
+
+        .user-matric {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            color: #4a5568;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .nav-link:hover {
+            background: #edf2f7;
+            color: #667eea;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 15px;
+            background: #fed7d7;
+            color: #c53030;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 20px;
+        }
+
+        .logout-btn:hover {
+            background: #fc8181;
+            color: white;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 30px;
+        }
+
+        .content-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-header h1 {
+            font-size: 28px;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .content-header p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* SUPERVISOR CARD */
+        .supervisor-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .supervisor-card h2 {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .supervisor-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .supervisor-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .supervisor-details h3 {
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .supervisor-details p {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        /* LOGBOOK HISTORY */
+        .logbook-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .logbook-card h2 {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .log-entry {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #e2e8f0;
+        }
+
+        .log-entry.pending {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+
+        .log-entry.approved {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .log-entry.rejected {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .log-date-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .log-date {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .log-time {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-approved {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-rejected {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .log-activities {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .log-feedback {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        .log-feedback.rejected {
+            border-left: 3px solid #ef4444;
+        }
+
+        .log-feedback.approved {
+            border-left: 3px solid #10b981;
+        }
+
+        .log-feedback strong {
+            color: #2d3748;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .log-feedback p {
+            color: #4a5568;
+            font-size: 13px;
+        }
+
+        /* ACTION BUTTONS */
+        .log-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .fix-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fix-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .locked-badge {
+            background: #e5e7eb;
+            color: #6b7280;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* FORMS */
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+
+        .form-card h2 {
+            font-size: 22px;
+            color: #2d3748;
+            margin-bottom: 25px;
+        }
+
+        .form-mode-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .cancel-btn {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .cancel-btn:hover {
+            background: #edf2f7;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #f7fafc;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #34d399;
+            color: #065f46;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .log-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                </div>
+                <span class="logo-text">SIWES</span>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">J</div>
+                <div class="user-name" id="userName">John Doe</div>
+                <div class="user-matric" id="userMatric">SWE/2020/001</div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link active" onclick="showSection('dashboard')" id="navDashboard">
+                        Dashboard Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('newlog')" id="navNewLog">
+                        New Log Entry
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('finalreport')" id="navFinalReport">
+                        Final Report
+                    </a>
+                </li>
+            </ul>
+
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1 id="pageTitle">Student Dashboard</h1>
+                <p id="pageSubtitle">Welcome back! Here's your SIWES activity overview.</p>
+            </div>
+
+            <!-- DASHBOARD HOME -->
+            <section class="content-section active" id="dashboardPage">
+                <div class="supervisor-card">
+                    <h2>Assigned Supervisor</h2>
+                    <div class="supervisor-info">
+                        <div class="supervisor-avatar">D</div>
+                        <div class="supervisor-details">
+                            <h3>Dr. Amina Mohammed</h3>
+                            <p>amina.mohammed@university.edu.ng</p>
+                            <p>+234 803 456 7890</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="logbook-card">
+                    <h2>Logbook History</h2>
+                    <div id="logbookEntries"></div>
+                </div>
+            </section>
+
+            <!-- NEW/EDIT LOG ENTRY -->
+            <section class="content-section" id="newlogPage">
+                <div class="form-card">
+                    <h2 id="formTitle">Submit Daily Log Entry</h2>
+                    <div class="success-message" id="logSuccessMessage">✓ Log entry submitted successfully!</div>
+                    <form id="newLogForm" onsubmit="submitLog(event)">
+                        <input type="hidden" id="editLogId" value="">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="logDate">Date</label>
+                                <input type="date" id="logDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="timeIn">Time In</label>
+                                <input type="time" id="timeIn" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="timeOut">Time Out</label>
+                                <input type="time" id="timeOut" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="activities">Activities Performed</label>
+                            <textarea id="activities" placeholder="Describe your activities in detail..."
+                                required></textarea>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="submit-btn" id="submitBtn">Submit Log Entry</button>
+                            <button type="button" class="cancel-btn" onclick="cancelEdit()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- FINAL REPORT -->
+            <section class="content-section" id="finalreportPage">
+                <div class="form-card">
+                    <h2>Upload Final Report</h2>
+                    <div class="success-message" id="reportSuccessMessage">✓ Final report uploaded successfully!</div>
+                    <p style="color: #718096; margin-bottom: 25px;">Upload your completed SIWES final report in PDF
+                        format.</p>
+                    <form id="finalReportForm" onsubmit="uploadReport(event)">
+                        <div class="form-group">
+                            <label for="reportTitle">Report Title</label>
+                            <input type="text" id="reportTitle" placeholder="e.g., SIWES Report - Software Development"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Upload PDF Report</label>
+                            <div class="file-upload-area" onclick="document.getElementById('pdfFile').click()">
+                                <p>Click to select a PDF file</p>
+                                <p id="fileName" style="margin-top: 10px; font-weight: bold;"></p>
+                            </div>
+                            <input type="file" id="pdfFile" accept=".pdf" class="file-input" required
+                                onchange="showFileName()">
+                        </div>
+                        <button type="submit" class="submit-btn">Upload Report</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // ===================================
+        // SESSION CHECK
+        // ===================================
+        (function checkAuth() {
+            const currentUser = sessionStorage.getItem('currentUser');
+            if (!currentUser) {
+                alert('Please login first!');
+                window.location.href = 'index.html';
+                return;
+            }
+            const user = JSON.parse(currentUser);
+            if (user.role !== 'student') {
+                alert('Access denied! This page is for students only.');
+                window.location.href = 'index.html';
+                return;
+            }
+            loadUserProfile(user);
+        })();
+
+        function loadUserProfile(user) {
+            document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userMatric').textContent = user.matric || 'N/A';
+        }
+
+        // ===================================
+        // MOCK DATA - STUDENT LOGS
+        // ===================================
+        const mockLogs = [
+            {
+                id: 1,
+                date: '2024-11-18',
+                timeIn: '08:00',
+                timeOut: '17:00',
+                activities: 'Worked on Django backend models. Created User, LogEntry, and FinalReport models with proper relationships.',
+                status: 'approved',
+                feedback: 'Excellent work! Very detailed activities.'
+            },
+            {
+                id: 2,
+                date: '2024-11-17',
+                timeIn: '08:30',
+                timeOut: '16:30',
+                activities: 'Built React frontend dashboard with authentication and routing.',
+                status: 'pending',
+                feedback: null
+            },
+            {
+                id: 3,
+                date: '2024-11-16',
+                timeIn: '09:00',
+                timeOut: '17:30',
+                activities: 'Set up PostgreSQL database and configured Django settings.',
+                status: 'approved',
+                feedback: 'Good progress on database setup.'
+            },
+            {
+                id: 4,
+                date: '2024-11-15',
+                timeIn: '08:00',
+                timeOut: '15:00',
+                activities: 'Worked on project.',
+                status: 'rejected',
+                feedback: 'Too vague. Please provide specific details about what you worked on, including technologies used, problems solved, and lessons learned.'
+            }
+        ];
+
+        // Track if we're editing
+        let isEditMode = false;
+        let editingLogId = null;
+
+        // ===================================
+        // SHOW/HIDE SECTIONS
+        // ===================================
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionName + 'Page').classList.add('active');
+            document.getElementById('nav' + sectionName.charAt(0).toUpperCase() + sectionName.slice(1)).classList.add('active');
+
+            // Update page title
+            if (sectionName === 'dashboard') {
+                document.getElementById('pageTitle').textContent = 'Student Dashboard';
+                document.getElementById('pageSubtitle').textContent = "Welcome back! Here's your SIWES activity overview.";
+                loadLogbookHistory();
+            } else if (sectionName === 'newlog') {
+                if (!isEditMode) {
+                    document.getElementById('pageTitle').textContent = 'New Log Entry';
+                    document.getElementById('pageSubtitle').textContent = 'Submit your daily activity log.';
+                }
+            } else if (sectionName === 'finalreport') {
+                document.getElementById('pageTitle').textContent = 'Final Report';
+                document.getElementById('pageSubtitle').textContent = 'Upload your completed SIWES report.';
+            }
+        }
+
+        // ===================================
+        // LOAD LOGBOOK HISTORY
+        // ===================================
+        function loadLogbookHistory() {
+            const container = document.getElementById('logbookEntries');
+            container.innerHTML = '';
+
+            if (mockLogs.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #a0aec0;">No log entries yet.</p>';
+                return;
+            }
+
+            mockLogs.forEach(log => {
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${log.status}`;
+
+                // Determine action buttons based on status
+                let actionButtons = '';
+                if (log.status === 'pending') {
+                    actionButtons = `
+                        <div class="log-actions">
+                            <button class="edit-btn" onclick="editLog(${log.id})">
+                                ✏️ Edit
+                            </button>
+                        </div>
+                    `;
+                } else if (log.status === 'rejected') {
+                    actionButtons = `
+                        <div class="log-actions">
+                            <button class="fix-btn" onclick="editLog(${log.id})">
+                                🔧 Fix & Resubmit
+                            </button>
+                        </div>
+                    `;
+                } else if (log.status === 'approved') {
+                    actionButtons = `
+                        <div class="log-actions">
+                            <span class="locked-badge">
+                                🔒 Locked (Approved)
+                            </span>
+                        </div>
+                    `;
+                }
+
+                logEntry.innerHTML = `
+                    <div class="log-header">
+                        <div class="log-date-info">
+                            <span class="log-date">📅 ${log.date}</span>
+                            <span class="log-time">⏰ ${log.timeIn} - ${log.timeOut}</span>
+                        </div>
+                        <span class="status-badge status-${log.status}">${log.status.toUpperCase()}</span>
+                    </div>
+                    <div class="log-activities">${log.activities}</div>
+                    ${log.feedback ? `
+                        <div class="log-feedback ${log.status}">
+                            <strong>Supervisor Feedback:</strong>
+                            <p>${log.feedback}</p>
+                        </div>
+                    ` : ''}
+                    ${actionButtons}
+                `;
+                container.appendChild(logEntry);
+            });
+        }
+
+        // ===================================
+        // EDIT LOG ENTRY
+        // ===================================
+        function editLog(logId) {
+            const log = mockLogs.find(l => l.id === logId);
+            if (!log) return;
+
+            // Set edit mode
+            isEditMode = true;
+            editingLogId = logId;
+
+            // Pre-fill form with existing data
+            document.getElementById('editLogId').value = logId;
+            document.getElementById('logDate').value = log.date;
+            document.getElementById('timeIn').value = log.timeIn;
+            document.getElementById('timeOut').value = log.timeOut;
+            document.getElementById('activities').value = log.activities;
+
+            // Update form title and button text
+            const formTitle = log.status === 'rejected' ?
+                'Edit & Resubmit Log Entry <span class="form-mode-badge">FIXING REJECTED ENTRY</span>' :
+                'Edit Log Entry <span class="form-mode-badge">EDITING MODE</span>';
+
+            document.getElementById('formTitle').innerHTML = formTitle;
+            document.getElementById('submitBtn').textContent = log.status === 'rejected' ?
+                'Fix & Resubmit for Review' :
+                'Update Log Entry';
+
+            // Update page header
+            document.getElementById('pageTitle').textContent = log.status === 'rejected' ?
+                'Fix Rejected Log Entry' :
+                'Edit Log Entry';
+            document.getElementById('pageSubtitle').textContent =
+                'Make your corrections and resubmit for supervisor review.';
+
+            // Show the form
+            showSection('newlog');
+        }
+
+        // ===================================
+        // CANCEL EDIT
+        // ===================================
+        function cancelEdit() {
+            // Reset edit mode
+            isEditMode = false;
+            editingLogId = null;
+
+            // Clear form
+            document.getElementById('newLogForm').reset();
+            document.getElementById('editLogId').value = '';
+
+            // Reset form title
+            document.getElementById('formTitle').innerHTML = 'Submit Daily Log Entry';
+            document.getElementById('submitBtn').textContent = 'Submit Log Entry';
+
+            // Go back to dashboard
+            showSection('dashboard');
+        }
+
+        // ===================================
+        // SUBMIT/UPDATE LOG ENTRY
+        // ===================================
+        function submitLog(event) {
+            event.preventDefault();
+
+            const logData = {
+                date: document.getElementById('logDate').value,
+                timeIn: document.getElementById('timeIn').value,
+                timeOut: document.getElementById('timeOut').value,
+                activities: document.getElementById('activities').value
+            };
+
+            const successMsg = document.getElementById('logSuccessMessage');
+
+            // CHECK IF EDITING OR CREATING NEW
+            if (isEditMode && editingLogId) {
+                // UPDATE EXISTING LOG
+                const logIndex = mockLogs.findIndex(l => l.id === editingLogId);
+
+                if (logIndex !== -1) {
+                    // Update the log data
+                    mockLogs[logIndex].date = logData.date;
+                    mockLogs[logIndex].timeIn = logData.timeIn;
+                    mockLogs[logIndex].timeOut = logData.timeOut;
+                    mockLogs[logIndex].activities = logData.activities;
+
+                    // CRITICAL: Change status back to PENDING for supervisor review
+                    mockLogs[logIndex].status = 'pending';
+                    mockLogs[logIndex].feedback = null; // Clear old feedback
+
+                    // Show success message
+                    successMsg.textContent = '✓ Log updated and resubmitted for review!';
+                    successMsg.classList.add('show');
+                    setTimeout(() => successMsg.classList.remove('show'), 3000);
+
+                    // Reset form and edit mode
+                    document.getElementById('newLogForm').reset();
+                    isEditMode = false;
+                    editingLogId = null;
+                    document.getElementById('editLogId').value = '';
+                    document.getElementById('formTitle').innerHTML = 'Submit Daily Log Entry';
+                    document.getElementById('submitBtn').textContent = 'Submit Log Entry';
+
+                    // Go back to dashboard after short delay
+                    setTimeout(() => {
+                        showSection('dashboard');
+                    }, 1500);
+                }
+            } else {
+                // CREATE NEW LOG
+                const newLog = {
+                    id: mockLogs.length > 0 ? Math.max(...mockLogs.map(l => l.id)) + 1 : 1,
+                    date: logData.date,
+                    timeIn: logData.timeIn,
+                    timeOut: logData.timeOut,
+                    activities: logData.activities,
+                    status: 'pending',
+                    feedback: null
+                };
+
+                mockLogs.unshift(newLog); // Add to beginning of array
+
+                // Show success message
+                successMsg.textContent = '✓ Log entry submitted successfully!';
+                successMsg.classList.add('show');
+                setTimeout(() => successMsg.classList.remove('show'), 3000);
+
+                // Reset form
+                document.getElementById('newLogForm').reset();
+            }
+        }
+
+        // ===================================
+        // UPLOAD REPORT
+        // ===================================
+        function uploadReport(event) {
+            event.preventDefault();
+
+            const successMsg = document.getElementById('reportSuccessMessage');
+            successMsg.classList.add('show');
+            setTimeout(() => successMsg.classList.remove('show'), 3000);
+
+            document.getElementById('finalReportForm').reset();
+            document.getElementById('fileName').textContent = '';
+        }
+
+        function showFileName() {
+            const fileInput = document.getElementById('pdfFile');
+            const fileName = document.getElementById('fileName');
+            if (fileInput.files.length > 0) {
+                fileName.textContent = '📄 ' + fileInput.files[0].name;
+            }
+        }
+
+        // ===================================
+        // LOGOUT
+        // ===================================
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Load logbook on page load
+        window.addEventListener('load', loadLogbookHistory);
+    </script>
+</body>
+
+</html>
