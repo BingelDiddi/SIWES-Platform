@@ -1,1090 +1,638 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - SIWES Platform</title>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
     <style>
-        /* ===================================
-           GLOBAL STYLES & RESET
+      /* ... [SAME CSS AS BEFORE] ... */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7fafc;
+        color: #2d3748;
+      }
+      .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px;
+      }
+
+      /* HEADER */
+      .dashboard-header {
+        background: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .logo-section {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-section svg {
+        width: 32px;
+        height: 32px;
+        fill: white;
+      }
+      .header-info h1 {
+        font-size: 28px;
+        color: #2d3748;
+        margin-bottom: 5px;
+      }
+      .header-info p {
+        color: #718096;
+        font-size: 14px;
+      }
+      .admin-badge {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 15px;
+      }
+
+      .register-btn {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+      }
+      .register-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+      }
+
+      .logout-btn {
+        background: #fed7d7;
+        color: #c53030;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+      }
+      .logout-btn:hover {
+        background: #fc8181;
+        color: white;
+      }
+
+      /* STATS */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .stat-info h3 {
+        color: #718096;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+      .stat-info p {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2d3748;
+      }
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ASSIGNMENT */
+      .assignment-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+      .assignment-card h2 {
+        font-size: 22px;
+        color: #2d3748;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .assignment-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 15px;
+        align-items: end;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .form-group label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2d3748;
+      }
+      .form-group select {
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 15px;
+        font-family: inherit;
+        background: white;
+        cursor: pointer;
+      }
+      .assign-btn {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      /* TABLES */
+      .tables-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .table-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .user-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .user-table thead {
+        background: #f7fafc;
+        border-bottom: 2px solid #e2e8f0;
+      }
+      .user-table th {
+        padding: 12px;
+        text-align: left;
+        font-size: 13px;
+        font-weight: 600;
+        color: #718096;
+        text-transform: uppercase;
+      }
+      .user-table td {
+        padding: 15px 12px;
+        font-size: 14px;
+        color: #4a5568;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      /* ===================================
+           MODAL CSS (RESTORED)
            =================================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f7fafc;
-            color: #2d3748;
-        }
-
-        /* ===================================
-           MAIN CONTAINER
-           =================================== */
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px 20px;
-        }
-
-        /* ===================================
-           HEADER SECTION
-           =================================== */
-        .dashboard-header {
-            background: white;
-            padding: 25px 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .logo-section {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-section svg {
-            width: 32px;
-            height: 32px;
-            fill: white;
-        }
-
-        .header-info h1 {
-            font-size: 28px;
-            color: #2d3748;
-            margin-bottom: 5px;
-        }
-
-        .header-info p {
-            color: #718096;
-            font-size: 14px;
-        }
-
-        .admin-badge {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .logout-btn {
-            background: #fed7d7;
-            color: #c53030;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .logout-btn:hover {
-            background: #fc8181;
-            color: white;
-        }
-
-        /* ===================================
-           STATISTICS CARDS
-           =================================== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .stat-info h3 {
-            color: #718096;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-
-        .stat-info p {
-            font-size: 32px;
-            font-weight: 700;
-            color: #2d3748;
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .stat-icon svg {
-            width: 32px;
-            height: 32px;
-        }
-
-        .stat-icon.blue {
-            background: #dbeafe;
-        }
-
-        .stat-icon.blue svg {
-            fill: #2563eb;
-        }
-
-        .stat-icon.green {
-            background: #d1fae5;
-        }
-
-        .stat-icon.green svg {
-            fill: #059669;
-        }
-
-        .stat-icon.orange {
-            background: #fed7aa;
-        }
-
-        .stat-icon.orange svg {
-            fill: #d97706;
-        }
-
-        /* ===================================
-           ASSIGNMENT SECTION
-           =================================== */
-        .assignment-card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .assignment-card h2 {
-            font-size: 22px;
-            color: #2d3748;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .assignment-card h2 svg {
-            width: 24px;
-            height: 24px;
-            fill: #f59e0b;
-        }
-
-        .assignment-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: 15px;
-            align-items: end;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #2d3748;
-        }
-
-        .form-group select {
-            padding: 12px 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 15px;
-            font-family: inherit;
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .form-group select:focus {
-            outline: none;
-            border-color: #f59e0b;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-        }
-
-        .assign-btn {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .assign-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
-        }
-
-        .assign-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Success Message */
-        .success-message {
-            background: #d1fae5;
-            border: 1px solid #34d399;
-            color: #065f46;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-            animation: slideDown 0.3s ease;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===================================
-           USER TABLES SECTION
-           =================================== */
-        .tables-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .table-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .table-card h2 {
-            font-size: 20px;
-            color: #2d3748;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .table-card h2 svg {
-            width: 22px;
-            height: 22px;
-        }
-
-        .table-card h2.students svg {
-            fill: #2563eb;
-        }
-
-        .table-card h2.supervisors svg {
-            fill: #059669;
-        }
-
-        .user-count {
-            background: #e5e7eb;
-            color: #4b5563;
-            font-size: 12px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 600;
-        }
-
-        /* Table Styles */
-        .user-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .user-table thead {
-            background: #f7fafc;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .user-table th {
-            padding: 12px;
-            text-align: left;
-            font-size: 13px;
-            font-weight: 600;
-            color: #718096;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .user-table tbody tr {
-            border-bottom: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-        }
-
-        .user-table tbody tr:hover {
-            background: #f7fafc;
-        }
-
-        .user-table tbody tr:last-child {
-            border-bottom: none;
-        }
-
-        .user-table td {
-            padding: 15px 12px;
-            font-size: 14px;
-            color: #4a5568;
-        }
-
-        .user-avatar-cell {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .table-avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .table-avatar.supervisor {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-        }
-
-        .user-name-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 2px;
-        }
-
-        .user-email {
-            font-size: 12px;
-            color: #718096;
-        }
-
-        .role-badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .role-badge.student {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .role-badge.supervisor {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .assigned-supervisor {
-            font-size: 13px;
-            color: #4a5568;
-        }
-
-        .not-assigned {
-            color: #a0aec0;
-            font-style: italic;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #a0aec0;
-        }
-
-        .empty-state svg {
-            width: 60px;
-            height: 60px;
-            fill: #cbd5e0;
-            margin-bottom: 15px;
-        }
-
-        /* ===================================
-           RESPONSIVE DESIGN
-           =================================== */
-        @media (max-width: 1024px) {
-            .tables-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-header {
-                flex-direction: column;
-                gap: 20px;
-                align-items: flex-start;
-            }
-
-            .header-left {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .assignment-form {
-                grid-template-columns: 1fr;
-            }
-
-            .user-table {
-                font-size: 12px;
-            }
-
-            .user-table th,
-            .user-table td {
-                padding: 10px 8px;
-            }
-        }
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.2s ease;
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        animation: slideUp 0.3s ease;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .modal-header h2 {
+        font-size: 20px;
+        color: #2d3748;
+      }
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #718096;
+        cursor: pointer;
+      }
+
+      .reg-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .reg-form input,
+      .reg-form select {
+        padding: 12px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 14px;
+        width: 100%;
+      }
+      .reg-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .reg-submit-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .reg-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      }
+
+      /* Hide fields by default */
+      .student-only-field {
+        display: none;
+      }
+      .student-only-field.show {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
     </style>
-</head>
-
-<body>
+  </head>
+  <body>
     <div class="dashboard-container">
-        <!-- ===================================
-             HEADER SECTION
-             =================================== -->
-        <header class="dashboard-header">
-            <div class="header-left">
-                <div class="logo-section">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                    </svg>
-                </div>
-                <div class="header-info">
-                    <h1>Admin Dashboard</h1>
-                    <p>SIWES Platform Management System</p>
-                </div>
-                <span class="admin-badge">Administrator</span>
-            </div>
-            <button class="logout-btn" onclick="logout()">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                        d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
-                        clip-rule="evenodd" />
-                </svg>
-                Logout
-            </button>
-        </header>
-
-        <!-- ===================================
-             STATISTICS CARDS
-             =================================== -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-info">
-                    <h3>Total Students</h3>
-                    <p id="totalStudents">0</p>
-                </div>
-                <div class="stat-icon blue">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                    </svg>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-info">
-                    <h3>Total Supervisors</h3>
-                    <p id="totalSupervisors">0</p>
-                </div>
-                <div class="stat-icon green">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                    </svg>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-info">
-                    <h3>Assignments</h3>
-                    <p id="totalAssignments">0</p>
-                </div>
-                <div class="stat-icon orange">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-            </div>
+      <header class="dashboard-header">
+        <div class="header-left">
+          <div class="logo-section">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path
+                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+              />
+            </svg>
+          </div>
+          <div class="header-info">
+            <h1 id="adminName">Admin Dashboard</h1>
+            <p>SIWES Platform Management System</p>
+          </div>
+          <span class="admin-badge">Administrator</span>
         </div>
-
-        <!-- ===================================
-             ASSIGN STUDENT TO SUPERVISOR
-             =================================== -->
-        <div class="assignment-card">
-            <h2>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                Assign Student to Supervisor
-            </h2>
-
-            <!-- Success Message -->
-            <div class="success-message" id="successMessage"></div>
-
-            <form class="assignment-form" id="assignmentForm" onsubmit="assignStudent(event)">
-                <div class="form-group">
-                    <label for="studentSelect">Select Student</label>
-                    <select id="studentSelect" required>
-                        <option value="">-- Choose a student --</option>
-                        <!-- Students will be populated by JavaScript -->
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="supervisorSelect">Select Supervisor</label>
-                    <select id="supervisorSelect" required>
-                        <option value="">-- Choose a supervisor --</option>
-                        <!-- Supervisors will be populated by JavaScript -->
-                    </select>
-                </div>
-
-                <button type="submit" class="assign-btn">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    Assign
-                </button>
-            </form>
+        <div class="header-actions">
+          <button class="register-btn" onclick="openRegisterModal()">
+            <span style="font-size: 18px">+</span> Register User
+          </button>
+          <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
+      </header>
 
-        <!-- ===================================
-             USER TABLES (STUDENTS & SUPERVISORS)
-             =================================== -->
-        <div class="tables-grid">
-            <!-- Students Table -->
-            <div class="table-card">
-                <h2 class="students">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                    </svg>
-                    All Students
-                    <span class="user-count" id="studentsCount">0</span>
-                </h2>
-
-                <div style="overflow-x: auto;">
-                    <table class="user-table">
-                        <thead>
-                            <tr>
-                                <th>Student</th>
-                                <th>Matric No</th>
-                                <th>Assigned Supervisor</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentsTableBody">
-                            <!-- Students will be populated by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Supervisors Table -->
-            <div class="table-card">
-                <h2 class="supervisors">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                    </svg>
-                    All Supervisors
-                    <span class="user-count" id="supervisorsCount">0</span>
-                </h2>
-
-                <div style="overflow-x: auto;">
-                    <table class="user-table">
-                        <thead>
-                            <tr>
-                                <th>Supervisor</th>
-                                <th>Email</th>
-                                <th>Students</th>
-                            </tr>
-                        </thead>
-                        <tbody id="supervisorsTableBody">
-                            <!-- Supervisors will be populated by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-info">
+            <h3>Total Students</h3>
+            <p id="totalStudents">0</p>
+          </div>
         </div>
+      </div>
+
+      <div class="assignment-card">
+        <h2>Assign Student to Supervisor</h2>
+        <form class="assignment-form" onsubmit="assignStudent(event)">
+          <div class="form-group">
+            <label>Select Student</label>
+            <select id="studentSelect" required>
+              <option value="">Loading...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Select Supervisor</label>
+            <select id="supervisorSelect" required>
+              <option value="">Loading...</option>
+            </select>
+          </div>
+          <button type="submit" class="assign-btn">Assign</button>
+        </form>
+      </div>
+
+      <div class="tables-grid">
+        <div class="table-card">
+          <h2>All Students</h2>
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Matric No</th>
+                <th>Assigned Supervisor</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="registerModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Register New User</h2>
+          <button class="close-modal" onclick="closeRegisterModal()">×</button>
+        </div>
+        <form class="reg-form" onsubmit="registerUser(event)">
+          <div class="reg-row">
+            <div class="form-group">
+              <label>Role</label>
+              <select id="regRole" onchange="toggleStudentFields()" required>
+                <option value="student">Student</option>
+                <option value="supervisor">Supervisor</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Email</label><input type="email" id="regEmail" required />
+            </div>
+          </div>
+
+          <div class="reg-row">
+            <div class="form-group">
+              <label>First Name</label
+              ><input type="text" id="regFirst" required />
+            </div>
+            <div class="form-group">
+              <label>Last Name</label
+              ><input type="text" id="regLast" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Password</label
+            ><input type="password" id="regPass" required />
+          </div>
+
+          <div class="student-only-field show" id="fieldMatric">
+            <div class="form-group">
+              <label>Matric Number</label><input type="text" id="regMatric" />
+            </div>
+          </div>
+          <div class="student-only-field show" id="fieldDept">
+            <div class="form-group">
+              <label>Department</label><input type="text" id="regDept" />
+            </div>
+          </div>
+
+          <button type="submit" class="reg-submit-btn">Create Account</button>
+        </form>
+      </div>
     </div>
 
     <script>
-        // ===================================
-        // SESSION CHECK & AUTHENTICATION
-        // This runs immediately when the page loads
-        // ===================================
-        (function checkAuthentication() {
-            // Get the current user from sessionStorage
-            const currentUser = sessionStorage.getItem('currentUser');
+      const API_BASE = "http://127.0.0.1:8000/api";
+      let students = [];
 
-            // If no user is logged in, redirect to login page
-            if (!currentUser) {
-                alert('Please login first!');
-                window.location.href = 'index.html';
-                return;
-            }
+      // Auth Helper
+      const getHeaders = () => ({
+        Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+        "Content-Type": "application/json",
+      });
 
-            // Parse the user data from JSON string to object
-            const user = JSON.parse(currentUser);
+      async function init() {
+        const token = sessionStorage.getItem("accessToken");
+        if (!token) window.location.href = "index.html";
 
-            // Check if the logged-in user is an admin
-            if (user.role !== 'admin') {
-                alert('Access denied! This page is for administrators only.');
-                window.location.href = 'index.html';
-                return;
-            }
+        // 1. Fetch Admin Profile
+        try {
+          const profileRes = await fetch(`${API_BASE}/profile/`, {
+            headers: getHeaders(),
+          });
+          if (profileRes.ok) {
+            const profile = await profileRes.json();
+            document.getElementById(
+              "adminName"
+            ).textContent = `Welcome, ${profile.first_name}`;
+          }
+        } catch (e) {}
 
-            // If authentication passes, initialize the dashboard
-            initializeDashboard();
-        })();
+        // 2. Fetch Students
+        try {
+          const res = await fetch(`${API_BASE}/admin/students/`, {
+            headers: getHeaders(),
+          });
+          if (res.ok) {
+            students = await res.json();
+            renderStudents();
+          }
+        } catch (e) {}
 
-        // ===================================
-        // MOCK DATA - ALL STUDENTS
-        // This simulates data that would come from Django backend
-        // ===================================
-        const ALL_STUDENTS = [
-            {
-                id: 1,
-                name: 'John Doe',
-                email: 'john.doe@student.edu.ng',
-                matric: 'SWE/2020/001',
-                supervisorId: 1 // Assigned to Dr. Amina Mohammed
-            },
-            {
-                id: 2,
-                name: 'Aisha Bello',
-                email: 'aisha.bello@student.edu.ng',
-                matric: 'SWE/2020/015',
-                supervisorId: 1 // Assigned to Dr. Amina Mohammed
-            },
-            {
-                id: 3,
-                name: 'Chidi Okafor',
-                email: 'chidi.okafor@student.edu.ng',
-                matric: 'SWE/2020/023',
-                supervisorId: 1 // Assigned to Dr. Amina Mohammed
-            },
-            {
-                id: 4,
-                name: 'Fatima Ibrahim',
-                email: 'fatima.ibrahim@student.edu.ng',
-                matric: 'SWE/2020/032',
-                supervisorId: 1 // Assigned to Dr. Amina Mohammed
-            },
-            {
-                id: 5,
-                name: 'Emmanuel Okon',
-                email: 'emmanuel.okon@student.edu.ng',
-                matric: 'SWE/2020/045',
-                supervisorId: 2 // Assigned to Dr. Usman Ali
-            },
-            {
-                id: 6,
-                name: 'Blessing Adeyemi',
-                email: 'blessing.adeyemi@student.edu.ng',
-                matric: 'SWE/2020/052',
-                supervisorId: 2 // Assigned to Dr. Usman Ali
-            },
-            {
-                id: 7,
-                name: 'Ibrahim Musa',
-                email: 'ibrahim.musa@student.edu.ng',
-                matric: 'SWE/2020/061',
-                supervisorId: null // Not yet assigned
-            },
-            {
-                id: 8,
-                name: 'Grace Eze',
-                email: 'grace.eze@student.edu.ng',
-                matric: 'SWE/2020/074',
-                supervisorId: null // Not yet assigned
-            }
-        ];
+        // 3. Fetch Supervisors (for dropdown)
+        try {
+          const res = await fetch(`${API_BASE}/supervisors/`, {
+            headers: getHeaders(),
+          });
+          if (res.ok) {
+            const supervisors = await res.json();
+            renderSupervisorDropdown(supervisors);
+          }
+        } catch (e) {}
+      }
 
-        // ===================================
-        // MOCK DATA - ALL SUPERVISORS
-        // This simulates data that would come from Django backend
-        // ===================================
-        const ALL_SUPERVISORS = [
-            {
-                id: 1,
-                name: 'Dr. Amina Mohammed',
-                email: 'amina.mohammed@university.edu.ng',
-                phone: '+234 803 456 7890'
-            },
-            {
-                id: 2,
-                name: 'Dr. Usman Ali',
-                email: 'usman.ali@university.edu.ng',
-                phone: '+234 805 123 4567'
-            },
-            {
-                id: 3,
-                name: 'Prof. Ibrahim Yusuf',
-                email: 'ibrahim.yusuf@university.edu.ng',
-                phone: '+234 806 789 0123'
-            },
-            {
-                id: 4,
-                name: 'Dr. Ngozi Okeke',
-                email: 'ngozi.okeke@university.edu.ng',
-                phone: '+234 807 234 5678'
-            }
-        ];
+      function renderStudents() {
+        document.getElementById("totalStudents").textContent = students.length;
 
-        // ===================================
-        // INITIALIZE DASHBOARD
-        // Load all data when page loads
-        // ===================================
-        function initializeDashboard() {
-            updateStatistics();
-            populateStudentDropdown();
-            populateSupervisorDropdown();
-            loadStudentsTable();
-            loadSupervisorsTable();
-        }
+        const select = document.getElementById("studentSelect");
+        select.innerHTML = '<option value="">-- Select Student --</option>';
+        students.forEach((s) => {
+          const opt = document.createElement("option");
+          opt.value = s.id;
+          opt.textContent = `${s.user_details.first_name} ${s.user_details.last_name} (${s.matric_number})`;
+          select.appendChild(opt);
+        });
 
-        // ===================================
-        // UPDATE STATISTICS CARDS
-        // Calculate and display totals
-        // ===================================
-        function updateStatistics() {
-            // Count total students
-            document.getElementById('totalStudents').textContent = ALL_STUDENTS.length;
-
-            // Count total supervisors
-            document.getElementById('totalSupervisors').textContent = ALL_SUPERVISORS.length;
-
-            // Count assignments (students with assigned supervisors)
-            const assignedCount = ALL_STUDENTS.filter(function (student) {
-                return student.supervisorId !== null;
-            }).length;
-            document.getElementById('totalAssignments').textContent = assignedCount;
-        }
-
-        // ===================================
-        // POPULATE STUDENT DROPDOWN
-        // Fill the student select with options
-        // ===================================
-        function populateStudentDropdown() {
-            const select = document.getElementById('studentSelect');
-
-            // Clear existing options (except the first default option)
-            select.innerHTML = '<option value="">-- Choose a student --</option>';
-
-            // Add option for each student
-            ALL_STUDENTS.forEach(function (student) {
-                const option = document.createElement('option');
-                option.value = student.id;
-                option.textContent = student.name + ' (' + student.matric + ')';
-                select.appendChild(option);
-            });
-        }
-
-        // ===================================
-        // POPULATE SUPERVISOR DROPDOWN
-        // Fill the supervisor select with options
-        // ===================================
-        function populateSupervisorDropdown() {
-            const select = document.getElementById('supervisorSelect');
-
-            // Clear existing options (except the first default option)
-            select.innerHTML = '<option value="">-- Choose a supervisor --</option>';
-
-            // Add option for each supervisor
-            ALL_SUPERVISORS.forEach(function (supervisor) {
-                const option = document.createElement('option');
-                option.value = supervisor.id;
-                option.textContent = supervisor.name;
-                select.appendChild(option);
-            });
-        }
-
-        // ===================================
-        // LOAD STUDENTS TABLE
-        // Populate the students table with data
-        // ===================================
-        function loadStudentsTable() {
-            const tbody = document.getElementById('studentsTableBody');
-            const count = document.getElementById('studentsCount');
-
-            // Update count
-            count.textContent = ALL_STUDENTS.length;
-
-            // Clear existing rows
-            tbody.innerHTML = '';
-
-            // Check if there are students
-            if (ALL_STUDENTS.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="3" class="empty-state">
-                            <svg fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                            </svg>
-                            <p>No students found</p>
-                        </td>
-                    </tr>
+        const tbody = document.getElementById("studentsTableBody");
+        tbody.innerHTML = "";
+        students.forEach((s) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+                    <td>${s.user_details.first_name} ${
+            s.user_details.last_name
+          }</td>
+                    <td>${s.matric_number}</td>
+                    <td>${
+                      s.supervisor_name ||
+                      '<span style="color:#a0aec0">Not Assigned</span>'
+                    }</td>
                 `;
-                return;
-            }
+          tbody.appendChild(tr);
+        });
+      }
 
-            // Create table row for each student
-            ALL_STUDENTS.forEach(function (student) {
-                const tr = document.createElement('tr');
+      function renderSupervisorDropdown(supervisors) {
+        const select = document.getElementById("supervisorSelect");
+        select.innerHTML = '<option value="">-- Select Supervisor --</option>';
+        supervisors.forEach((sup) => {
+          const opt = document.createElement("option");
+          opt.value = sup.id;
+          opt.textContent = `${sup.first_name} ${sup.last_name}`;
+          select.appendChild(opt);
+        });
+      }
 
-                // Get first letter for avatar
-                const initial = student.name.charAt(0).toUpperCase();
+      async function assignStudent(e) {
+        e.preventDefault();
+        const studentId = document.getElementById("studentSelect").value;
+        const supervisorId = document.getElementById("supervisorSelect").value;
 
-                // Find supervisor name if assigned
-                let supervisorName = 'Not Assigned';
-                if (student.supervisorId) {
-                    const supervisor = ALL_SUPERVISORS.find(function (s) {
-                        return s.id === student.supervisorId;
-                    });
-                    if (supervisor) {
-                        supervisorName = supervisor.name;
-                    }
-                }
+        const res = await fetch(`${API_BASE}/admin/students/${studentId}/`, {
+          method: "PATCH",
+          headers: getHeaders(),
+          body: JSON.stringify({ assigned_supervisor: supervisorId }),
+        });
 
-                tr.innerHTML = `
-                    <td>
-                        <div class="user-avatar-cell">
-                            <div class="table-avatar">${initial}</div>
-                            <div class="user-name-info">
-                                <div class="user-name">${student.name}</div>
-                                <div class="user-email">${student.email}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${student.matric}</td>
-                    <td>
-                        <span class="assigned-supervisor ${student.supervisorId ? '' : 'not-assigned'}">
-                            ${supervisorName}
-                        </span>
-                    </td>
-                `;
+        if (res.ok) {
+          alert("Assigned Successfully!");
+          init();
+        } else {
+          alert("Assignment failed.");
+        }
+      }
 
-                tbody.appendChild(tr);
-            });
+      // ===================================
+      // RESTORED: REGISTRATION LOGIC
+      // ===================================
+      function openRegisterModal() {
+        document.getElementById("registerModal").classList.add("show");
+      }
+      function closeRegisterModal() {
+        document.getElementById("registerModal").classList.remove("show");
+      }
+
+      function toggleStudentFields() {
+        const role = document.getElementById("regRole").value;
+        const fields = document.querySelectorAll(".student-only-field");
+        fields.forEach((f) => {
+          if (role === "student") f.classList.add("show");
+          else f.classList.remove("show");
+        });
+      }
+
+      async function registerUser(e) {
+        e.preventDefault();
+
+        const role = document.getElementById("regRole").value;
+        const payload = {
+          email: document.getElementById("regEmail").value,
+          password: document.getElementById("regPass").value,
+          first_name: document.getElementById("regFirst").value,
+          last_name: document.getElementById("regLast").value,
+          username: document.getElementById("regEmail").value,
+          role: role,
+        };
+
+        if (role === "student") {
+          payload.matric_number = document.getElementById("regMatric").value;
+          payload.department = document.getElementById("regDept").value;
         }
 
-        // ===================================
-        // LOAD SUPERVISORS TABLE
-        // Populate the supervisors table with data
-        // ===================================
-        function loadSupervisorsTable() {
-            const tbody = document.getElementById('supervisorsTableBody');
-            const count = document.getElementById('supervisorsCount');
+        try {
+          const res = await fetch(`${API_BASE}/register/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
 
-            // Update count
-            count.textContent = ALL_SUPERVISORS.length;
-
-            // Clear existing rows
-            tbody.innerHTML = '';
-
-            // Check if there are supervisors
-            if (ALL_SUPERVISORS.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="3" class="empty-state">
-                            <svg fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
-                            </svg>
-                            <p>No supervisors found</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            // Create table row for each supervisor
-            ALL_SUPERVISORS.forEach(function (supervisor) {
-                const tr = document.createElement('tr');
-
-                // Get first letter for avatar
-                const initial = supervisor.name.charAt(0).toUpperCase();
-
-                // Count how many students are assigned to this supervisor
-                const assignedStudentsCount = ALL_STUDENTS.filter(function (student) {
-                    return student.supervisorId === supervisor.id;
-                }).length;
-
-                tr.innerHTML = `
-                    <td>
-                        <div class="user-avatar-cell">
-                            <div class="table-avatar supervisor">${initial}</div>
-                            <div class="user-name-info">
-                                <div class="user-name">${supervisor.name}</div>
-                                <div class="user-email">${supervisor.phone}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${supervisor.email}</td>
-                    <td>
-                        <span class="role-badge supervisor">${assignedStudentsCount} Students</span>
-                    </td>
-                `;
-
-                tbody.appendChild(tr);
-            });
+          if (res.ok) {
+            alert("User Created Successfully!");
+            closeRegisterModal();
+            init(); // Refresh the student list
+          } else {
+            const errData = await res.json();
+            alert("Error: " + JSON.stringify(errData));
+          }
+        } catch (error) {
+          console.error(error);
+          alert("Registration failed.");
         }
+      }
 
-        // ===================================
-        // ASSIGN STUDENT TO SUPERVISOR
-        // Called when the assignment form is submitted
-        // ===================================
-        function assignStudent(event) {
-            // Prevent form from submitting normally
-            event.preventDefault();
-
-            // Get selected values
-            const studentId = parseInt(document.getElementById('studentSelect').value);
-            const supervisorId = parseInt(document.getElementById('supervisorSelect').value);
-
-            // Validate selections
-            if (!studentId || !supervisorId) {
-                alert('Please select both a student and a supervisor.');
-                return;
-            }
-
-            // Find the student and supervisor
-            const student = ALL_STUDENTS.find(function (s) {
-                return s.id === studentId;
-            });
-
-            const supervisor = ALL_SUPERVISORS.find(function (s) {
-                return s.id === supervisorId;
-            });
-
-            if (!student || !supervisor) {
-                alert('Invalid selection. Please try again.');
-                return;
-            }
-
-            // Update the student's supervisor assignment in mock data
-            student.supervisorId = supervisorId;
-
-            // Show success message
-            showSuccessMessage(
-                'Successfully assigned ' + student.name + ' (' + student.matric + ') to ' + supervisor.name
-            );
-
-            // Display alert (as requested)
-            alert(
-                'Assignment Successful!\n\n' +
-                'Student: ' + student.name + ' (' + student.matric + ')\n' +
-                'Assigned to: ' + supervisor.name + '\n\n' +
-                'In the final implementation, this will save to the Django database.'
-            );
-
-            // Reset the form
-            document.getElementById('assignmentForm').reset();
-
-            // Reload the tables to show updated assignments
-            loadStudentsTable();
-            loadSupervisorsTable();
-            updateStatistics();
-        }
-
-        // ===================================
-        // SHOW SUCCESS MESSAGE
-        // Displays a temporary success notification
-        // ===================================
-        function showSuccessMessage(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = '✓ ' + message;
-            successDiv.classList.add('show');
-
-            // Hide after 5 seconds
-            setTimeout(function () {
-                successDiv.classList.remove('show');
-            }, 5000);
-        }
-
-        // ===================================
-        // LOGOUT FUNCTION
-        // Clears session and redirects to login
-        // ===================================
-        function logout() {
-            // Confirm logout
-            const confirmLogout = confirm('Are you sure you want to logout?');
-
-            if (confirmLogout) {
-                // Clear session storage
-                sessionStorage.removeItem('currentUser');
-
-                // Redirect to login page
-                window.location.href = 'index.html';
-            }
-        }
+      function logout() {
+        sessionStorage.clear();
+        window.location.href = "index.html";
+      }
+      init();
     </script>
-</body>
-
+  </body>
 </html>
