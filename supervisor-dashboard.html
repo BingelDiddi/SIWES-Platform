@@ -144,6 +144,7 @@
       const API_BASE =
         "https://siwes-platform-project-backend.onrender.com/api";
       let allLogs = [];
+      let myStudents = [];
       let uniqueStudents = [];
       let currentViewingStudentId = null;
 
@@ -171,46 +172,77 @@
           }
         } catch (e) {}
 
-        // 2. Fetch Logs
+        // 2. Fetch Assigned Students (NEW STEP)
+        // This ensures we see students even with 0 logs
+        try {
+          const res = await fetch(`${API_BASE}/supervisor/students/`, {
+            headers: getHeaders(),
+          });
+          if (res.ok) {
+            myStudents = await res.json();
+          }
+        } catch (e) {
+          console.error("Error fetching students:", e);
+        }
+
+        // 3. Fetch Logs
         try {
           const res = await fetch(`${API_BASE}/logs/`, {
             headers: getHeaders(),
           });
           if (res.ok) {
             allLogs = await res.json();
-            processLogsIntoStudents();
           }
         } catch (e) {
-          console.error(e);
+          console.error("Error fetching logs:", e);
         }
+
+        // 4. Build Dashboard
+        processData();
       }
 
-      function processLogsIntoStudents() {
+      function processData() {
         const studentMap = {};
-        allLogs.forEach((log) => {
-          const studentId = log.student;
-          const studentName = log.student_name || "Unknown";
-          const matric = log.matric || "N/A";
 
-          if (!studentMap[studentId]) {
-            studentMap[studentId] = {
-              id: studentId,
-              name: studentName,
-              matric: matric,
-              pending: 0,
-              logs: [],
-            };
-          }
-          studentMap[studentId].logs.push(log);
-          if (log.status === "pending") studentMap[studentId].pending++;
+        // STEP A: Initialize Map with ALL Assigned Students
+        myStudents.forEach((profile) => {
+          // Note: profile.user_details contains the User ID and Name
+          const userId = profile.user_details.id;
+
+          studentMap[userId] = {
+            id: userId,
+            name: `${profile.user_details.first_name} ${profile.user_details.last_name}`,
+            matric: profile.matric_number,
+            pending: 0,
+            logs: [],
+          };
         });
 
+        // STEP B: Attach Logs to the correct Student
+        if (allLogs.length > 0) {
+          allLogs.forEach((log) => {
+            const studentId = log.student;
+
+            // Only process logs if this student is actually assigned to us
+            if (studentMap[studentId]) {
+              studentMap[studentId].logs.push(log);
+              if (log.status === "pending") {
+                studentMap[studentId].pending++;
+              }
+            }
+          });
+        }
+
+        // STEP C: Convert to Array & Update UI
         uniqueStudents = Object.values(studentMap);
+
         document.getElementById("totalStudents").textContent =
           uniqueStudents.length;
-        document.getElementById("pendingReviews").textContent = allLogs.filter(
+        // Count total pending from the logs we actually have
+        const totalPending = allLogs.filter(
           (l) => l.status === "pending"
         ).length;
+        document.getElementById("pendingReviews").textContent = totalPending;
 
         if (
           document.getElementById("directoryView").classList.contains("active")
@@ -230,13 +262,26 @@
       function renderDirectory() {
         const tbody = document.getElementById("studentTableBody");
         tbody.innerHTML = "";
+
         if (uniqueStudents.length === 0) {
           tbody.innerHTML =
             '<tr><td colspan="4" style="text-align:center; padding:20px;">No students assigned yet.</td></tr>';
           return;
         }
+
         uniqueStudents.forEach((student) => {
           const tr = document.createElement("tr");
+
+          // Determine status text
+          let statusHtml = "";
+          if (student.logs.length === 0) {
+            statusHtml = '<span style="color:#718096">No Logs Yet</span>';
+          } else if (student.pending > 0) {
+            statusHtml = `<span style="color:#d97706; font-weight:bold">${student.pending} Pending</span>`;
+          } else {
+            statusHtml = '<span style="color:#059669">All Reviewed</span>';
+          }
+
           tr.innerHTML = `
               <td>
                   <div class="student-name-cell">
@@ -247,11 +292,7 @@
                   </div>
               </td>
               <td><span>${student.matric}</span></td>
-              <td>${
-                student.pending > 0
-                  ? `<span style="color:#d97706; font-weight:bold">${student.pending} Pending</span>`
-                  : '<span style="color:#059669">All Reviewed</span>'
-              }</td>
+              <td>${statusHtml}</td>
               <td><button class="manage-btn" onclick="viewStudentLogs(${
                 student.id
               })">Manage</button></td>
@@ -268,6 +309,16 @@
         ).textContent = `Logbook: ${studentData.name}`;
         const container = document.getElementById("studentLogsContainer");
         container.innerHTML = "";
+
+        // Handle Empty Logs Case
+        if (studentData.logs.length === 0) {
+          container.innerHTML = `<div style="text-align:center; padding:40px; color:#718096; background:#f7fafc; border-radius:8px;">
+                <h3>No Entries Yet</h3>
+                <p>This student has not submitted any logbook entries.</p>
+            </div>`;
+          showView("student");
+          return;
+        }
 
         const sortedLogs = studentData.logs.sort((a, b) => {
           if (a.status === "pending" && b.status !== "pending") return -1;
@@ -327,12 +378,15 @@
           });
           if (res.ok) {
             alert(`Log ${status} successfully!`);
-            init().then(() => {
-              const studentId = uniqueStudents.find((s) =>
-                s.logs.some((l) => l.id === logId)
-              )?.id;
-              if (studentId) viewStudentLogs(studentId);
+            // Refresh logs
+            const logRes = await fetch(`${API_BASE}/logs/`, {
+              headers: getHeaders(),
             });
+            if (logRes.ok) {
+              allLogs = await logRes.json();
+              processData(); // Rebuild directory
+              viewStudentLogs(currentViewingStudentId); // Refresh view
+            }
           } else {
             alert("Error submitting review.");
           }
@@ -341,25 +395,17 @@
         }
       }
 
-      // ===================================
-      // REPORT GENERATION FUNCTIONS (MISSING)
-      // ===================================
+      // MODAL FUNCTIONS
       function openReportModal() {
-        // Only open if we are actually viewing a specific student
         if (!currentViewingStudentId) {
           console.error("No student selected");
           return;
         }
-
-        // Set default dates (last 30 days) to make it easier for the user
         const end = new Date();
         const start = new Date();
         start.setDate(start.getDate() - 30);
-
         document.getElementById("endDate").valueAsDate = end;
         document.getElementById("startDate").valueAsDate = start;
-
-        // Show the modal by adding the CSS class
         document.getElementById("reportModal").classList.add("show");
       }
 
@@ -369,19 +415,15 @@
 
       async function generateReport(event) {
         event.preventDefault();
-
         const startDate = document.getElementById("startDate").value;
         const endDate = document.getElementById("endDate").value;
         const btn = event.target.querySelector("button");
         const originalText = btn.textContent;
-
-        // Visual feedback
         btn.textContent = "Generating...";
         btn.disabled = true;
 
         try {
           const url = `${API_BASE}/reports/generate/${currentViewingStudentId}/?start_date=${startDate}&end_date=${endDate}`;
-
           const res = await fetch(url, {
             method: "GET",
             headers: {
@@ -390,15 +432,10 @@
           });
 
           if (res.ok) {
-            // Convert response to a file (Blob)
             const blob = await res.blob();
             const downloadUrl = window.URL.createObjectURL(blob);
-
-            // Create a temporary link to trigger download
             const a = document.createElement("a");
             a.href = downloadUrl;
-
-            // Generate a filename
             const student = uniqueStudents.find(
               (s) => s.id === currentViewingStudentId
             );
@@ -406,16 +443,14 @@
               ? student.name.replace(/\s+/g, "_")
               : "Student";
             a.download = `SIWES_Report_${safeName}.pdf`;
-
             document.body.appendChild(a);
             a.click();
             a.remove();
             window.URL.revokeObjectURL(downloadUrl);
-
             closeReportModal();
             alert("Report downloaded successfully!");
           } else {
-            alert("Failed to generate report. Please check the date range.");
+            alert("Failed to generate report.");
           }
         } catch (error) {
           console.error(error);
