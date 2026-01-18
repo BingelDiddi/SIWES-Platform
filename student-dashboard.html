@@ -1,280 +1,249 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Dashboard</title>
-    <link href="student.css" rel="stylesheet" />
-  </head>
 
-  <body>
-    <div class="dashboard-container">
-      <aside class="sidebar">
-        <div class="sidebar-logo">
-          <div class="logo-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path
-                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-              />
-              <polyline points="14 2 14 8 20 8" />
-            </svg>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard</title>
+  <link href="student.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+        </div>
+        <span class="logo-text">SIWES</span>
+      </div>
+      <div class="user-profile">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-name" id="userName">Loading...</div>
+        <div class="user-matric" id="userMatric">...</div>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a class="nav-link active" onclick="showSection('dashboard')" id="navDashboard">Dashboard Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick="showSection('newlog')" id="navNewLog">New Log Entry</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick="showSection('finalreport')" id="navFinalReport">Final Report</a>
+        </li>
+      </ul>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </aside>
+
+    <main class="main-content">
+      <div class="content-header">
+        <h1 id="pageTitle">Student Dashboard</h1>
+        <p id="pageSubtitle">Welcome back!</p>
+      </div>
+
+      <section class="content-section active" id="dashboardPage">
+        <div class="logbook-card">
+          <h2>Logbook History</h2>
+          <div id="logbookEntries">Loading logs...</div>
+        </div>
+      </section>
+
+      <section class="content-section" id="newlogPage">
+        <div class="form-card">
+          <h2 id="formTitle">Submit Daily Log Entry</h2>
+          <div class="success-message" id="logSuccessMessage">
+            ✓ Log entry submitted successfully!
           </div>
-          <span class="logo-text">SIWES</span>
-        </div>
-        <div class="user-profile">
-          <div class="user-avatar" id="userAvatar">U</div>
-          <div class="user-name" id="userName">Loading...</div>
-          <div class="user-matric" id="userMatric">...</div>
-        </div>
-        <ul class="nav-menu">
-          <li class="nav-item">
-            <a
-              class="nav-link active"
-              onclick="showSection('dashboard')"
-              id="navDashboard"
-              >Dashboard Home</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" onclick="showSection('newlog')" id="navNewLog"
-              >New Log Entry</a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              onclick="showSection('finalreport')"
-              id="navFinalReport"
-              >Final Report</a
-            >
-          </li>
-        </ul>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-      </aside>
-
-      <main class="main-content">
-        <div class="content-header">
-          <h1 id="pageTitle">Student Dashboard</h1>
-          <p id="pageSubtitle">Welcome back!</p>
-        </div>
-
-        <section class="content-section active" id="dashboardPage">
-          <div class="logbook-card">
-            <h2>Logbook History</h2>
-            <div id="logbookEntries">Loading logs...</div>
-          </div>
-        </section>
-
-        <section class="content-section" id="newlogPage">
-          <div class="form-card">
-            <h2 id="formTitle">Submit Daily Log Entry</h2>
-            <div class="success-message" id="logSuccessMessage">
-              ✓ Log entry submitted successfully!
+          <form id="newLogForm" onsubmit="submitLog(event)">
+            <input type="hidden" id="editLogId" value="" />
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date</label><input type="date" id="logDate" required />
+              </div>
+              <div class="form-group">
+                <label>Time In</label><input type="time" id="timeIn" required />
+              </div>
+              <div class="form-group">
+                <label>Time Out</label><input type="time" id="timeOut" required />
+              </div>
             </div>
-            <form id="newLogForm" onsubmit="submitLog(event)">
-              <input type="hidden" id="editLogId" value="" />
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Date</label><input type="date" id="logDate" required />
-                </div>
-                <div class="form-group">
-                  <label>Time In</label
-                  ><input type="time" id="timeIn" required />
-                </div>
-                <div class="form-group">
-                  <label>Time Out</label
-                  ><input type="time" id="timeOut" required />
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Activities Performed</label
-                ><textarea id="activities" required></textarea>
-              </div>
-              <div class="form-buttons">
-                <button type="submit" class="submit-btn" id="submitBtn">
-                  Submit Log Entry
-                </button>
-                <button type="button" class="cancel-btn" onclick="cancelEdit()">
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </section>
-
-        <section class="content-section" id="finalreportPage">
-          <div class="form-card">
-            <h2>Upload Final Report</h2>
-            <div class="success-message" id="reportSuccessMessage">
-              ✓ Uploaded successfully!
+            <div class="form-group">
+              <label>Activities Performed</label><textarea id="activities" required></textarea>
             </div>
-            <form id="finalReportForm" onsubmit="uploadReport(event)">
-              <div class="form-group">
-                <label>Report Title</label
-                ><input type="text" id="reportTitle" required />
+            <div class="form-buttons">
+              <button type="submit" class="submit-btn" id="submitBtn">
+                Submit Log Entry
+              </button>
+              <button type="button" class="cancel-btn" onclick="cancelEdit()">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="content-section" id="finalreportPage">
+        <div class="form-card">
+          <h2>Upload Final Report</h2>
+          <div class="success-message" id="reportSuccessMessage">
+            ✓ Uploaded successfully!
+          </div>
+          <form id="finalReportForm" onsubmit="uploadReport(event)">
+            <div class="form-group">
+              <label>Report Title</label><input type="text" id="reportTitle" required />
+            </div>
+            <div class="form-group">
+              <label>Upload PDF</label>
+              <div class="file-upload-area" onclick="document.getElementById('pdfFile').click()">
+                <p>Click to select PDF</p>
+                <p id="fileName"></p>
               </div>
-              <div class="form-group">
-                <label>Upload PDF</label>
-                <div
-                  class="file-upload-area"
-                  onclick="document.getElementById('pdfFile').click()"
-                >
-                  <p>Click to select PDF</p>
-                  <p id="fileName"></p>
-                </div>
-                <input
-                  type="file"
-                  id="pdfFile"
-                  accept=".pdf"
-                  class="file-input"
-                  required
-                  onchange="
+              <input type="file" id="pdfFile" accept=".pdf" class="file-input" required onchange="
                     document.getElementById('fileName').textContent =
                       this.files[0].name
-                  "
-                />
-              </div>
-              <button type="submit" class="submit-btn">Upload Report</button>
-            </form>
-          </div>
-        </section>
-      </main>
-    </div>
+                  " />
+            </div>
+            <button type="submit" class="submit-btn">Upload Report</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
 
-    <script>
-      const API_BASE = "http://127.0.0.1:8000/api";
-      let logs = [];
-      let isEditMode = false;
+  <script>
+    const API_BASE = "http://127.0.0.1:8000/api";
+    let logs = [];
+    let isEditMode = false;
 
-      // Auth Header Helper
-      const getAuthHeaders = () => ({
-        Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-        "Content-Type": "application/json",
-      });
+    // Auth Header Helper
+    const getAuthHeaders = () => ({
+      Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+      "Content-Type": "application/json",
+    });
 
-      (async function init() {
-        const token = sessionStorage.getItem("accessToken");
-        if (!token) window.location.href = "index.html";
+    (async function init() {
+      const token = sessionStorage.getItem("accessToken");
+      if (!token) window.location.href = "index.html";
 
-        // 1. Fetch student Profile
-        try {
-          const res = await fetch(`${API_BASE}/profile/`, {
-            headers: getAuthHeaders(),
-          });
-          if (res.ok) {
-            const profile = await res.json();
+      // 1. Fetch student Profile
+      try {
+        const res = await fetch(`${API_BASE}/profile/`, {
+          headers: getAuthHeaders(),
+        });
+        if (res.ok) {
+          const profile = await res.json();
 
-            console.log(profile);
-            document.getElementById("userName").textContent =
-              `${profile.first_name} ${profile.last_name}`;
-            document.getElementById("userAvatar").textContent =
-              profile.first_name.charAt(0);
-            document.getElementById("userMatric").textContent =
-              `${profile.matric}`;
-          }
-        } catch (e) {
-          console.log(e);
+          console.log(profile);
+          document.getElementById("userName").textContent =
+            `${profile.first_name} ${profile.last_name}`;
+          document.getElementById("userAvatar").textContent =
+            profile.first_name.charAt(0);
+          document.getElementById("userMatric").textContent =
+            `${profile.matric}`;
         }
+      } catch (e) {
+        console.log(e);
+      }
 
-        // Fetch Logs
-        try {
-          const response = await fetch(`${API_BASE}/logs/`, {
-            headers: getAuthHeaders(),
-          });
-          if (response.ok) {
-            logs = await response.json();
-            renderLogs();
-          }
-        } catch (e) {
-          console.error(e);
+      // Fetch Logs
+      try {
+        const response = await fetch(`${API_BASE}/logs/`, {
+          headers: getAuthHeaders(),
+        });
+        if (response.ok) {
+          logs = await response.json();
+          renderLogs();
         }
-      })();
+      } catch (e) {
+        console.error(e);
+      }
+    })();
 
-      function renderLogs() {
-        const container = document.getElementById("logbookEntries");
-        container.innerHTML = "";
-        if (logs.length === 0) {
-          container.innerHTML = "<p>No logs found.</p>";
-          return;
-        }
+    function renderLogs() {
+      const container = document.getElementById("logbookEntries");
+      container.innerHTML = "";
+      if (logs.length === 0) {
+        container.innerHTML = "<p>No logs found.</p>";
+        return;
+      }
 
-        logs.forEach((log) => {
-          const div = document.createElement("div");
-          div.className = `log-entry ${log.status}`;
-          div.innerHTML = `
+      logs.forEach((log) => {
+        const div = document.createElement("div");
+        div.className = `log-entry ${log.status}`;
+        div.innerHTML = `
                     <div class="log-header">
-                        <div class="log-date-info"><span class="log-date">📅 ${
-                          log.date
-                        }</span><span class="log-time">⏰ ${log.time_in} - ${
-                          log.time_out
-                        }</span></div>
-                        <span class="status-badge status-${log.status}">${
-                          log.status
-                        }</span>
+                        <div class="log-date-info"><span class="log-date">📅 ${log.date
+          }</span><span class="log-time">⏰ ${log.time_in} - ${log.time_out
+          }</span></div>
+                        <span class="status-badge status-${log.status}">${log.status
+          }</span>
                     </div>
                     <div class="log-activities">${log.activities}</div>
-                    ${
-                      log.supervisor_feedback
-                        ? `<div class="log-feedback"><strong>Feedback:</strong> ${log.supervisor_feedback}</div>`
-                        : ""
-                    }
-                    ${
-                      log.status === "pending" || log.status === "rejected"
-                        ? `<button class="edit-btn" onclick="startEdit(${log.id})">✏️ Edit</button>`
-                        : ""
-                    }
+                    ${log.supervisor_feedback
+            ? `<div class="log-feedback"><strong>Feedback:</strong> ${log.supervisor_feedback}</div>`
+            : ""
+          }
+                    ${log.status === "pending" || log.status === "rejected"
+            ? `<button class="edit-btn" onclick="startEdit(${log.id})">✏️ Edit</button>`
+            : ""
+          }
                 `;
-          container.appendChild(div);
-        });
+        container.appendChild(div);
+      });
+    }
+
+    function startEdit(id) {
+      const log = logs.find((l) => l.id === id);
+      if (!log) return;
+      isEditMode = true;
+      document.getElementById("editLogId").value = id;
+      document.getElementById("logDate").value = log.date;
+      document.getElementById("timeIn").value = log.time_in; // Note backend snake_case
+      document.getElementById("timeOut").value = log.time_out;
+      document.getElementById("activities").value = log.activities;
+      document.getElementById("submitBtn").textContent = "Update Log";
+      showSection("newlog");
+    }
+
+    async function submitLog(e) {
+      e.preventDefault();
+      const data = {
+        date: document.getElementById("logDate").value,
+        time_in: document.getElementById("timeIn").value,
+        time_out: document.getElementById("timeOut").value,
+        activities: document.getElementById("activities").value,
+      };
+
+      const url = isEditMode
+        ? `${API_BASE}/logs/${document.getElementById("editLogId").value}/`
+        : `${API_BASE}/logs/`;
+      const method = isEditMode ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method: method,
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        alert("Saved!");
+        location.reload();
+      } else {
+        alert("Error saving log");
       }
+    }
 
-      function startEdit(id) {
-        const log = logs.find((l) => l.id === id);
-        if (!log) return;
-        isEditMode = true;
-        document.getElementById("editLogId").value = id;
-        document.getElementById("logDate").value = log.date;
-        document.getElementById("timeIn").value = log.time_in; // Note backend snake_case
-        document.getElementById("timeOut").value = log.time_out;
-        document.getElementById("activities").value = log.activities;
-        document.getElementById("submitBtn").textContent = "Update Log";
-        showSection("newlog");
-      }
+    async function uploadReport(e) {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("title", document.getElementById("reportTitle").value);
+      formData.append("file", document.getElementById("pdfFile").files[0]);
 
-      async function submitLog(e) {
-        e.preventDefault();
-        const data = {
-          date: document.getElementById("logDate").value,
-          time_in: document.getElementById("timeIn").value,
-          time_out: document.getElementById("timeOut").value,
-          activities: document.getElementById("activities").value,
-        };
-
-        const url = isEditMode
-          ? `${API_BASE}/logs/${document.getElementById("editLogId").value}/`
-          : `${API_BASE}/logs/`;
-        const method = isEditMode ? "PUT" : "POST";
-
-        const res = await fetch(url, {
-          method: method,
-          headers: getAuthHeaders(),
-          body: JSON.stringify(data),
-        });
-
-        if (res.ok) {
-          alert("Saved!");
-          location.reload();
-        } else {
-          alert("Error saving log");
-        }
-      }
-
-      async function uploadReport(e) {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append("title", document.getElementById("reportTitle").value);
-        formData.append("file", document.getElementById("pdfFile").files[0]);
-
+      try {
         const res = await fetch(`${API_BASE}/reports/`, {
           method: "POST",
           headers: {
@@ -283,27 +252,48 @@
           body: formData,
         });
 
-        if (res.ok) alert("Report Uploaded!");
-        else alert("Upload failed");
-      }
+        if (res.ok) {
+          // Show success message
+          const successMsg = document.getElementById("reportSuccessMessage");
+          successMsg.style.display = "block";
 
-      function showSection(id) {
-        document
-          .querySelectorAll(".content-section")
-          .forEach((el) => el.classList.remove("active"));
-        document
-          .querySelectorAll(".nav-link")
-          .forEach((el) => el.classList.remove("active"));
-        document.getElementById(id + "Page").classList.add("active");
-      }
+          // Reset form
+          document.getElementById("finalReportForm").reset();
+          document.getElementById("fileName").textContent = "";
 
-      function cancelEdit() {
-        location.reload();
+          // Hide success message after 3 seconds
+          setTimeout(() => {
+            successMsg.style.display = "none";
+          }, 3000);
+        } else {
+          const errorData = await res.json();
+          const errorMsg = errorData.detail || errorData.non_field_errors?.[0] || "Upload failed";
+          alert("Upload failed: " + errorMsg);
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+        alert("Upload failed: " + error.message);
       }
-      function logout() {
-        sessionStorage.clear();
-        window.location.href = "index.html";
-      }
-    </script>
-  </body>
+    }
+
+    function showSection(id) {
+      document
+        .querySelectorAll(".content-section")
+        .forEach((el) => el.classList.remove("active"));
+      document
+        .querySelectorAll(".nav-link")
+        .forEach((el) => el.classList.remove("active"));
+      document.getElementById(id + "Page").classList.add("active");
+    }
+
+    function cancelEdit() {
+      location.reload();
+    }
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+
 </html>

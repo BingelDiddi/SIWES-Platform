@@ -1,349 +1,336 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Supervisor Dashboard</title>
-    <link href="supervisor.css" rel="stylesheet" />
-  </head>
 
-  <body>
-    <div class="dashboard-container">
-      <aside class="sidebar">
-        <div class="sidebar-header">
-          <div class="logo-section">
-            <div class="logo-icon">📚</div>
-            <span class="logo-text">SIWES</span>
-          </div>
-          <div class="supervisor-profile">
-            <div class="supervisor-avatar" id="supAvatar">S</div>
-            <div class="supervisor-name" id="supervisorName">Loading...</div>
-            <div class="supervisor-role">Supervisor</div>
-          </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supervisor Dashboard</title>
+  <link href="supervisor.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-section">
+          <div class="logo-icon">📚</div>
+          <span class="logo-text">SIWES</span>
         </div>
-        <ul class="nav-menu">
-          <li class="nav-item">
-            <a
-              class="nav-link active"
-              onclick="showView('overview')"
-              id="navOverview"
-              >Dashboard Overview</a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              onclick="showView('directory')"
-              id="navDirectory"
-              >Student Directory</a
-            >
-          </li>
-        </ul>
-        <button
-          class="logout-btn"
-          onclick="
+        <div class="supervisor-profile">
+          <div class="supervisor-avatar" id="supAvatar">S</div>
+          <div class="supervisor-name" id="supervisorName">Loading...</div>
+          <div class="supervisor-role">Supervisor</div>
+        </div>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a class="nav-link active" onclick="showView('overview')" id="navOverview">Dashboard Overview</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick="showView('directory')" id="navDirectory">Student Directory</a>
+        </li>
+      </ul>
+      <button class="logout-btn" onclick="
             sessionStorage.clear();
             window.location.href = 'index.html';
-          "
-        >
-          Logout
-        </button>
-      </aside>
+          ">
+        Logout
+      </button>
+    </aside>
 
-      <main class="main-content">
-        <div class="page-header">
-          <h1 id="pageTitle">Dashboard Overview</h1>
-        </div>
+    <main class="main-content">
+      <div class="page-header">
+        <h1 id="pageTitle">Dashboard Overview</h1>
+      </div>
 
-        <div class="content-view active" id="overviewView">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-info">
-                <h3>Total Students</h3>
-                <p id="totalStudents">0</p>
-              </div>
+      <div class="content-view active" id="overviewView">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <h3>Total Students</h3>
+              <p id="totalStudents">0</p>
             </div>
-            <div class="stat-card">
-              <div class="stat-info">
-                <h3>Pending Reviews</h3>
-                <p id="pendingReviews">0</p>
-              </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <h3>Pending Reviews</h3>
+              <p id="pendingReviews">0</p>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="content-view" id="directoryView">
-          <div class="directory-card">
-            <table class="student-table">
-              <thead>
-                <tr>
-                  <th>Student Name</th>
-                  <th>Matric Number</th>
-                  <th>Pending Logs</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="studentTableBody"></tbody>
-            </table>
-          </div>
+      <div class="content-view" id="directoryView">
+        <div class="directory-card">
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Matric Number</th>
+                <th>Pending Logs</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content-view" id="studentView">
+        <div class="student-view-header">
+          <button class="back-button" onclick="showView('directory')">
+            ← Back
+          </button>
+          <button class="open-report-btn" onclick="openReportModal()">
+            📄 Generate Report
+          </button>
         </div>
 
-        <div class="content-view" id="studentView">
-          <div class="student-view-header">
-            <button class="back-button" onclick="showView('directory')">
-              ← Back
-            </button>
-            <button class="open-report-btn" onclick="openReportModal()">
-              📄 Generate Report
-            </button>
-          </div>
+        <h2 id="viewingStudentName" style="margin-bottom: 15px; font-size: 18px"></h2>
 
-          <h2
-            id="viewingStudentName"
-            style="margin-bottom: 15px; font-size: 18px"
-          ></h2>
-
-          <div class="logs-container">
-            <div id="studentLogsContainer"></div>
-          </div>
+        <div class="reports-section" style="margin-bottom: 30px;">
+          <h3 style="margin-bottom: 15px; color: #2d3748;">Final Report</h3>
+          <div id="studentReportsContainer"></div>
         </div>
-      </main>
-    </div>
 
-    <div class="modal-overlay" id="reportModal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Generate PDF Report</h3>
-          <button
-            class="close-modal"
-            onclick="closeReportModal()"
-            style="
+        <div class="logs-container">
+          <h3 style="margin-bottom: 15px; color: #2d3748;">Logbook Entries</h3>
+          <div id="studentLogsContainer"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Generate PDF Report</h3>
+        <button class="close-modal" onclick="closeReportModal()" style="
               border: none;
               background: none;
               font-size: 24px;
               cursor: pointer;
-            "
-          >
-            ×
-          </button>
-        </div>
-        <form onsubmit="generateReport(event)">
-          <div class="date-inputs">
-            <div class="input-group">
-              <label>Start Date</label>
-              <input type="date" id="startDate" required />
-            </div>
-            <div class="input-group">
-              <label>End Date</label>
-              <input type="date" id="endDate" required />
-            </div>
-          </div>
-          <button type="submit" class="generate-btn-main">Download PDF</button>
-        </form>
+            ">
+          ×
+        </button>
       </div>
+      <form onsubmit="generateReport(event)">
+        <div class="date-inputs">
+          <div class="input-group">
+            <label>Start Date</label>
+            <input type="date" id="startDate" required />
+          </div>
+          <div class="input-group">
+            <label>End Date</label>
+            <input type="date" id="endDate" required />
+          </div>
+        </div>
+        <button type="submit" class="generate-btn-main">Download PDF</button>
+      </form>
     </div>
+  </div>
 
-    <script>
-      const API_BASE = "http://127.0.0.1:8000/api";
-      let allLogs = [];
-      let myStudents = [];
-      let uniqueStudents = [];
-      let currentViewingStudentId = null;
+  <script>
+    const API_BASE = "http://127.0.0.1:8000/api";
+    let allLogs = [];
+    let myStudents = [];
+    let uniqueStudents = [];
+    let currentViewingStudentId = null;
 
-      const getHeaders = () => ({
-        Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-        "Content-Type": "application/json",
+    const getHeaders = () => ({
+      Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+      "Content-Type": "application/json",
+    });
+
+    async function init() {
+      const token = sessionStorage.getItem("accessToken");
+      if (!token) window.location.href = "index.html";
+
+      // 1. Fetch Profile
+      try {
+        const res = await fetch(`${API_BASE}/profile/`, {
+          headers: getHeaders(),
+        });
+        if (res.ok) {
+          const profile = await res.json();
+          document.getElementById("supervisorName").textContent =
+            `${profile.first_name} ${profile.last_name}`;
+          document.getElementById("supAvatar").textContent =
+            profile.first_name.charAt(0);
+        }
+      } catch (e) { }
+
+      // 2. Fetch Assigned Students (NEW STEP)
+      // This ensures we see students even with 0 logs
+      try {
+        const res = await fetch(`${API_BASE}/supervisor/students/`, {
+          headers: getHeaders(),
+        });
+        if (res.ok) {
+          myStudents = await res.json();
+        }
+      } catch (e) {
+        console.error("Error fetching students:", e);
+      }
+
+      // 3. Fetch Logs
+      try {
+        const res = await fetch(`${API_BASE}/logs/`, {
+          headers: getHeaders(),
+        });
+        if (res.ok) {
+          allLogs = await res.json();
+        }
+      } catch (e) {
+        console.error("Error fetching logs:", e);
+      }
+
+      // 4. Build Dashboard
+      processData();
+    }
+
+    function processData() {
+      const studentMap = {};
+
+      // STEP A: Initialize Map with ALL Assigned Students
+      myStudents.forEach((profile) => {
+        // Note: profile.user_details contains the User ID and Name
+        const userId = profile.user_details.id;
+
+        studentMap[userId] = {
+          id: userId,
+          name: `${profile.user_details.first_name} ${profile.user_details.last_name}`,
+          matric: profile.matric_number,
+          pending: 0,
+          logs: [],
+        };
       });
 
-      async function init() {
-        const token = sessionStorage.getItem("accessToken");
-        if (!token) window.location.href = "index.html";
+      // STEP B: Attach Logs to the correct Student
+      if (allLogs.length > 0) {
+        allLogs.forEach((log) => {
+          const studentId = log.student;
 
-        // 1. Fetch Profile
-        try {
-          const res = await fetch(`${API_BASE}/profile/`, {
-            headers: getHeaders(),
-          });
-          if (res.ok) {
-            const profile = await res.json();
-            document.getElementById("supervisorName").textContent =
-              `${profile.first_name} ${profile.last_name}`;
-            document.getElementById("supAvatar").textContent =
-              profile.first_name.charAt(0);
-          }
-        } catch (e) {}
-
-        // 2. Fetch Assigned Students (NEW STEP)
-        // This ensures we see students even with 0 logs
-        try {
-          const res = await fetch(`${API_BASE}/supervisor/students/`, {
-            headers: getHeaders(),
-          });
-          if (res.ok) {
-            myStudents = await res.json();
-          }
-        } catch (e) {
-          console.error("Error fetching students:", e);
-        }
-
-        // 3. Fetch Logs
-        try {
-          const res = await fetch(`${API_BASE}/logs/`, {
-            headers: getHeaders(),
-          });
-          if (res.ok) {
-            allLogs = await res.json();
-          }
-        } catch (e) {
-          console.error("Error fetching logs:", e);
-        }
-
-        // 4. Build Dashboard
-        processData();
-      }
-
-      function processData() {
-        const studentMap = {};
-
-        // STEP A: Initialize Map with ALL Assigned Students
-        myStudents.forEach((profile) => {
-          // Note: profile.user_details contains the User ID and Name
-          const userId = profile.user_details.id;
-
-          studentMap[userId] = {
-            id: userId,
-            name: `${profile.user_details.first_name} ${profile.user_details.last_name}`,
-            matric: profile.matric_number,
-            pending: 0,
-            logs: [],
-          };
-        });
-
-        // STEP B: Attach Logs to the correct Student
-        if (allLogs.length > 0) {
-          allLogs.forEach((log) => {
-            const studentId = log.student;
-
-            // Only process logs if this student is actually assigned to us
-            if (studentMap[studentId]) {
-              studentMap[studentId].logs.push(log);
-              if (log.status === "pending") {
-                studentMap[studentId].pending++;
-              }
+          // Only process logs if this student is actually assigned to us
+          if (studentMap[studentId]) {
+            studentMap[studentId].logs.push(log);
+            if (log.status === "pending") {
+              studentMap[studentId].pending++;
             }
-          });
-        }
-
-        // STEP C: Convert to Array & Update UI
-        uniqueStudents = Object.values(studentMap);
-
-        document.getElementById("totalStudents").textContent =
-          uniqueStudents.length;
-        // Count total pending from the logs we actually have
-        const totalPending = allLogs.filter(
-          (l) => l.status === "pending",
-        ).length;
-        document.getElementById("pendingReviews").textContent = totalPending;
-
-        if (
-          document.getElementById("directoryView").classList.contains("active")
-        ) {
-          renderDirectory();
-        }
-      }
-
-      function showView(view) {
-        document
-          .querySelectorAll(".content-view")
-          .forEach((d) => d.classList.remove("active"));
-        document.getElementById(view + "View").classList.add("active");
-        if (view === "directory") renderDirectory();
-      }
-
-      function renderDirectory() {
-        const tbody = document.getElementById("studentTableBody");
-        tbody.innerHTML = "";
-
-        if (uniqueStudents.length === 0) {
-          tbody.innerHTML =
-            '<tr><td colspan="4" style="text-align:center; padding:20px;">No students assigned yet.</td></tr>';
-          return;
-        }
-
-        uniqueStudents.forEach((student) => {
-          const tr = document.createElement("tr");
-
-          // Determine status text
-          let statusHtml = "";
-          if (student.logs.length === 0) {
-            statusHtml = '<span style="color:#718096">No Logs Yet</span>';
-          } else if (student.pending > 0) {
-            statusHtml = `<span style="color:#d97706; font-weight:bold">${student.pending} Pending</span>`;
-          } else {
-            statusHtml = '<span style="color:#059669">All Reviewed</span>';
           }
+        });
+      }
 
-          tr.innerHTML = `
+      // STEP C: Convert to Array & Update UI
+      uniqueStudents = Object.values(studentMap);
+
+      document.getElementById("totalStudents").textContent =
+        uniqueStudents.length;
+      // Count total pending from the logs we actually have
+      const totalPending = allLogs.filter(
+        (l) => l.status === "pending",
+      ).length;
+      document.getElementById("pendingReviews").textContent = totalPending;
+
+      if (
+        document.getElementById("directoryView").classList.contains("active")
+      ) {
+        renderDirectory();
+      }
+    }
+
+    function showView(view) {
+      document
+        .querySelectorAll(".content-view")
+        .forEach((d) => d.classList.remove("active"));
+      document.getElementById(view + "View").classList.add("active");
+      if (view === "directory") renderDirectory();
+    }
+
+    function renderDirectory() {
+      const tbody = document.getElementById("studentTableBody");
+      tbody.innerHTML = "";
+
+      if (uniqueStudents.length === 0) {
+        tbody.innerHTML =
+          '<tr><td colspan="4" style="text-align:center; padding:20px;">No students assigned yet.</td></tr>';
+        return;
+      }
+
+      uniqueStudents.forEach((student) => {
+        const tr = document.createElement("tr");
+
+        // Determine status text
+        let statusHtml = "";
+        if (student.logs.length === 0) {
+          statusHtml = '<span style="color:#718096">No Logs Yet</span>';
+        } else if (student.pending > 0) {
+          statusHtml = `<span style="color:#d97706; font-weight:bold">${student.pending} Pending</span>`;
+        } else {
+          statusHtml = '<span style="color:#059669">All Reviewed</span>';
+        }
+
+        tr.innerHTML = `
               <td>
                   <div class="student-name-cell">
                       <div class="supervisor-avatar" style="width:35px; height:35px; font-size:14px;">${student.name.charAt(
-                        0,
-                      )}</div>
+          0,
+        )}</div>
                       <span>${student.name}</span>
                   </div>
               </td>
               <td><span>${student.matric}</span></td>
               <td>${statusHtml}</td>
-              <td><button class="manage-btn" onclick="viewStudentLogs(${
-                student.id
-              })">Manage</button></td>
+              <td><button class="manage-btn" onclick="viewStudentLogs(${student.id
+          })">Manage</button></td>
           `;
-          tbody.appendChild(tr);
-        });
-      }
+        tbody.appendChild(tr);
+      });
+    }
 
-      function viewStudentLogs(studentId) {
-        currentViewingStudentId = studentId;
-        const studentData = uniqueStudents.find((s) => s.id === studentId);
-        document.getElementById("viewingStudentName").textContent =
-          `Logbook: ${studentData.name}`;
-        const container = document.getElementById("studentLogsContainer");
-        container.innerHTML = "";
+    function viewStudentLogs(studentId) {
+      currentViewingStudentId = studentId;
+      const studentData = uniqueStudents.find((s) => s.id === studentId);
+      document.getElementById("viewingStudentName").textContent =
+        `Logbook: ${studentData.name}`;
+      const container = document.getElementById("studentLogsContainer");
+      const reportsContainer = document.getElementById("studentReportsContainer");
+      container.innerHTML = "";
+      reportsContainer.innerHTML = "<p>Loading...</p>";
 
-        // Handle Empty Logs Case
-        if (studentData.logs.length === 0) {
-          container.innerHTML = `<div style="text-align:center; padding:40px; color:#718096; background:#f7fafc; border-radius:8px;">
+      // Fetch and display final reports
+      fetchStudentReports(studentId, reportsContainer);
+
+      // Handle Empty Logs Case
+      if (studentData.logs.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:#718096; background:#f7fafc; border-radius:8px;">
                 <h3>No Entries Yet</h3>
                 <p>This student has not submitted any logbook entries.</p>
             </div>`;
-          showView("student");
-          return;
-        }
+        showView("student");
+        return;
+      }
 
-        const sortedLogs = studentData.logs.sort((a, b) => {
-          if (a.status === "pending" && b.status !== "pending") return -1;
-          if (a.status !== "pending" && b.status === "pending") return 1;
-          return new Date(b.date) - new Date(a.date);
-        });
+      const sortedLogs = studentData.logs.sort((a, b) => {
+        if (a.status === "pending" && b.status !== "pending") return -1;
+        if (a.status !== "pending" && b.status === "pending") return 1;
+        return new Date(b.date) - new Date(a.date);
+      });
 
-        sortedLogs.forEach((log) => {
-          const div = document.createElement("div");
-          div.className = `log-card ${log.status}`;
-          div.innerHTML = `
+      sortedLogs.forEach((log) => {
+        const div = document.createElement("div");
+        div.className = `log-card ${log.status}`;
+        div.innerHTML = `
               <div class="log-header">
-                  <span class="log-date">📅 ${log.date} (${log.time_in} - ${
-                    log.time_out
-                  })</span>
-                  <span class="status-badge status-${log.status}">${
-                    log.status
-                  }</span>
+                  <span class="log-date">📅 ${log.date} (${log.time_in} - ${log.time_out
+          })</span>
+                  <span class="status-badge status-${log.status}">${log.status
+          }</span>
               </div>
-              <div style="margin-bottom:10px; line-height:1.5;"><strong>Activity:</strong><br>${
-                log.activities
-              }</div>
-              ${
-                log.status === "pending"
-                  ? `
+              <div style="margin-bottom:10px; line-height:1.5;"><strong>Activity:</strong><br>${log.activities
+          }</div>
+              ${log.status === "pending"
+            ? `
                   <div class="review-section">
                       <textarea id="feedback-${log.id}" class="feedback-textarea" placeholder="Write feedback here..."></textarea>
                       <div class="action-buttons">
@@ -351,117 +338,161 @@
                           <button class="reject-btn" onclick="reviewLog(${log.id}, 'rejected')">Reject</button>
                       </div>
                   </div>`
-                  : `
+            : `
                   <div style="background:#f7fafc; padding:10px; border-radius:5px; margin-top:10px; border:1px solid #e2e8f0;">
-                      <strong>Your Feedback:</strong> ${
-                        log.supervisor_feedback || "No feedback given."
-                      }
-                  </div>`
-              }
-          `;
-          container.appendChild(div);
-        });
-        showView("student");
-      }
-
-      async function reviewLog(logId, status) {
-        const feedback = document.getElementById(`feedback-${logId}`).value;
-        if (status === "rejected" && !feedback) {
-          alert("Please provide a reason for rejection.");
-          return;
-        }
-        try {
-          const res = await fetch(`${API_BASE}/logs/${logId}/review/`, {
-            method: "POST",
-            headers: getHeaders(),
-            body: JSON.stringify({ status, supervisor_feedback: feedback }),
-          });
-          if (res.ok) {
-            alert(`Log ${status} successfully!`);
-            // Refresh logs
-            const logRes = await fetch(`${API_BASE}/logs/`, {
-              headers: getHeaders(),
-            });
-            if (logRes.ok) {
-              allLogs = await logRes.json();
-              processData(); // Rebuild directory
-              viewStudentLogs(currentViewingStudentId); // Refresh view
+                      <strong>Your Feedback:</strong> ${log.supervisor_feedback || "No feedback given."
             }
-          } else {
-            alert("Error submitting review.");
+                  </div>`
           }
-        } catch (e) {
-          console.error(e);
+          `;
+        container.appendChild(div);
+      });
+      showView("student");
+    }
+
+    async function fetchStudentReports(studentId, container) {
+      try {
+        const res = await fetch(`${API_BASE}/reports/?student=${studentId}`, {
+          headers: getHeaders(),
+        });
+        if (res.ok) {
+          const reports = await res.json();
+          if (reports.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:20px; color:#718096; background:#f7fafc; border-radius:8px;">
+                    <p>No final report submitted yet.</p>
+                </div>`;
+          } else {
+            container.innerHTML = "";
+            reports.forEach((report) => {
+              const div = document.createElement("div");
+              div.style.cssText = "background:#f7fafc; padding:15px; border-radius:8px; border:1px solid #cbd5e0; margin-bottom:10px;";
+              const uploadDate = new Date(report.uploaded_at).toLocaleDateString();
+              div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <div>
+                        <h4 style="margin:0 0 5px 0; color:#2d3748;">${report.title}</h4>
+                        <p style="margin:0; font-size:12px; color:#718096;">Uploaded: ${uploadDate}</p>
+                      </div>
+                      <a href="${report.file}" target="_blank" download style="padding:8px 16px; background:#4299e1; color:white; border-radius:4px; text-decoration:none; font-weight:bold;">
+                        📥 Download
+                      </a>
+                    </div>
+                `;
+              container.appendChild(div);
+            });
+          }
+        } else {
+          container.innerHTML = `<div style="text-align:center; padding:20px; color:#e53e3e; background:#fff5f5; border-radius:8px;">
+                  <p>Error loading report.</p>
+              </div>`;
         }
+      } catch (e) {
+        console.error("Error fetching reports:", e);
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:#e53e3e; background:#fff5f5; border-radius:8px;">
+                <p>Error loading report.</p>
+            </div>`;
       }
+    }
 
-      // MODAL FUNCTIONS
-      function openReportModal() {
-        if (!currentViewingStudentId) {
-          console.error("No student selected");
-          return;
-        }
-        const end = new Date();
-        const start = new Date();
-        start.setDate(start.getDate() - 30);
-        document.getElementById("endDate").valueAsDate = end;
-        document.getElementById("startDate").valueAsDate = start;
-        document.getElementById("reportModal").classList.add("show");
+    async function reviewLog(logId, status) {
+      const feedback = document.getElementById(`feedback-${logId}`).value;
+      if (status === "rejected" && !feedback) {
+        alert("Please provide a reason for rejection.");
+        return;
       }
-
-      function closeReportModal() {
-        document.getElementById("reportModal").classList.remove("show");
-      }
-
-      async function generateReport(event) {
-        event.preventDefault();
-        const startDate = document.getElementById("startDate").value;
-        const endDate = document.getElementById("endDate").value;
-        const btn = event.target.querySelector("button");
-        const originalText = btn.textContent;
-        btn.textContent = "Generating...";
-        btn.disabled = true;
-
-        try {
-          const url = `${API_BASE}/reports/generate/${currentViewingStudentId}/?start_date=${startDate}&end_date=${endDate}`;
-          const res = await fetch(url, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-            },
+      try {
+        const res = await fetch(`${API_BASE}/logs/${logId}/review/`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ status, supervisor_feedback: feedback }),
+        });
+        if (res.ok) {
+          alert(`Log ${status} successfully!`);
+          // Refresh logs
+          const logRes = await fetch(`${API_BASE}/logs/`, {
+            headers: getHeaders(),
           });
-
-          if (res.ok) {
-            const blob = await res.blob();
-            const downloadUrl = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = downloadUrl;
-            const student = uniqueStudents.find(
-              (s) => s.id === currentViewingStudentId,
-            );
-            const safeName = student
-              ? student.name.replace(/\s+/g, "_")
-              : "Student";
-            a.download = `SIWES_Report_${safeName}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(downloadUrl);
-            closeReportModal();
-            alert("Report downloaded successfully!");
-          } else {
-            alert("Failed to generate report.");
+          if (logRes.ok) {
+            allLogs = await logRes.json();
+            processData(); // Rebuild directory
+            viewStudentLogs(currentViewingStudentId); // Refresh view
           }
-        } catch (error) {
-          console.error(error);
-          alert("Network error occurred.");
-        } finally {
-          btn.textContent = originalText;
-          btn.disabled = false;
+        } else {
+          alert("Error submitting review.");
         }
+      } catch (e) {
+        console.error(e);
       }
+    }
 
-      init();
-    </script>
-  </body>
+    // MODAL FUNCTIONS
+    function openReportModal() {
+      if (!currentViewingStudentId) {
+        console.error("No student selected");
+        return;
+      }
+      const end = new Date();
+      const start = new Date();
+      start.setDate(start.getDate() - 30);
+      document.getElementById("endDate").valueAsDate = end;
+      document.getElementById("startDate").valueAsDate = start;
+      document.getElementById("reportModal").classList.add("show");
+    }
+
+    function closeReportModal() {
+      document.getElementById("reportModal").classList.remove("show");
+    }
+
+    async function generateReport(event) {
+      event.preventDefault();
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+      const btn = event.target.querySelector("button");
+      const originalText = btn.textContent;
+      btn.textContent = "Generating...";
+      btn.disabled = true;
+
+      try {
+        const url = `${API_BASE}/reports/generate/${currentViewingStudentId}/?start_date=${startDate}&end_date=${endDate}`;
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        });
+
+        if (res.ok) {
+          const blob = await res.blob();
+          const downloadUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = downloadUrl;
+          const student = uniqueStudents.find(
+            (s) => s.id === currentViewingStudentId,
+          );
+          const safeName = student
+            ? student.name.replace(/\s+/g, "_")
+            : "Student";
+          a.download = `SIWES_Report_${safeName}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(downloadUrl);
+          closeReportModal();
+          alert("Report downloaded successfully!");
+        } else {
+          alert("Failed to generate report.");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Network error occurred.");
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    init();
+  </script>
+</body>
+
 </html>
