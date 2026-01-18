@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -128,7 +128,10 @@
                   accept=".pdf"
                   class="file-input"
                   required
-                  onchange="document.getElementById('fileName').textContent = this.files[0].name"
+                  onchange="
+                    document.getElementById('fileName').textContent =
+                      this.files[0].name
+                  "
                 />
               </div>
               <button type="submit" class="submit-btn">Upload Report</button>
@@ -139,8 +142,7 @@
     </div>
 
     <script>
-      const API_BASE =
-        "https://siwes-platform-project-backend.onrender.com/api";
+      const API_BASE = "http://127.0.0.1:8000/api";
       let logs = [];
       let isEditMode = false;
 
@@ -163,14 +165,12 @@
             const profile = await res.json();
 
             console.log(profile);
-            document.getElementById(
-              "userName"
-            ).textContent = `${profile.first_name} ${profile.last_name}`;
+            document.getElementById("userName").textContent =
+              `${profile.first_name} ${profile.last_name}`;
             document.getElementById("userAvatar").textContent =
               profile.first_name.charAt(0);
-            document.getElementById(
-              "userMatric"
-            ).textContent = `${profile.matric}`;
+            document.getElementById("userMatric").textContent =
+              `${profile.matric}`;
           }
         } catch (e) {
           console.log(e);
@@ -206,11 +206,11 @@
                         <div class="log-date-info"><span class="log-date">📅 ${
                           log.date
                         }</span><span class="log-time">⏰ ${log.time_in} - ${
-            log.time_out
-          }</span></div>
+                          log.time_out
+                        }</span></div>
                         <span class="status-badge status-${log.status}">${
-            log.status
-          }</span>
+                          log.status
+                        }</span>
                     </div>
                     <div class="log-activities">${log.activities}</div>
                     ${

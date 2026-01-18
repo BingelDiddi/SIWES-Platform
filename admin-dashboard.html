@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -130,8 +130,7 @@
     </div>
 
     <script>
-      const API_BASE =
-        "https://siwes-platform-project-backend.onrender.com/api";
+      const API_BASE = "http://127.0.0.1:8000/api";
       let students = [];
 
       // Auth Helper
@@ -151,9 +150,8 @@
           });
           if (profileRes.ok) {
             const profile = await profileRes.json();
-            document.getElementById(
-              "adminName"
-            ).textContent = `Welcome, ${profile.first_name}`;
+            document.getElementById("adminName").textContent =
+              `Welcome, ${profile.first_name}`;
           }
         } catch (e) {}
 
@@ -198,8 +196,8 @@
           const tr = document.createElement("tr");
           tr.innerHTML = `
                     <td>${s.user_details.first_name} ${
-            s.user_details.last_name
-          }</td>
+                      s.user_details.last_name
+                    }</td>
                     <td>${s.matric_number}</td>
                     <td>${
                       s.supervisor_name ||

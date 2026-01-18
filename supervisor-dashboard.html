@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -41,7 +41,10 @@
         </ul>
         <button
           class="logout-btn"
-          onclick="sessionStorage.clear(); window.location.href='index.html'"
+          onclick="
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+          "
         >
           Logout
         </button>
@@ -141,8 +144,7 @@
     </div>
 
     <script>
-      const API_BASE =
-        "https://siwes-platform-project-backend.onrender.com/api";
+      const API_BASE = "http://127.0.0.1:8000/api";
       let allLogs = [];
       let myStudents = [];
       let uniqueStudents = [];
@@ -164,9 +166,8 @@
           });
           if (res.ok) {
             const profile = await res.json();
-            document.getElementById(
-              "supervisorName"
-            ).textContent = `${profile.first_name} ${profile.last_name}`;
+            document.getElementById("supervisorName").textContent =
+              `${profile.first_name} ${profile.last_name}`;
             document.getElementById("supAvatar").textContent =
               profile.first_name.charAt(0);
           }
@@ -240,7 +241,7 @@
           uniqueStudents.length;
         // Count total pending from the logs we actually have
         const totalPending = allLogs.filter(
-          (l) => l.status === "pending"
+          (l) => l.status === "pending",
         ).length;
         document.getElementById("pendingReviews").textContent = totalPending;
 
@@ -286,7 +287,7 @@
               <td>
                   <div class="student-name-cell">
                       <div class="supervisor-avatar" style="width:35px; height:35px; font-size:14px;">${student.name.charAt(
-                        0
+                        0,
                       )}</div>
                       <span>${student.name}</span>
                   </div>
@@ -304,9 +305,8 @@
       function viewStudentLogs(studentId) {
         currentViewingStudentId = studentId;
         const studentData = uniqueStudents.find((s) => s.id === studentId);
-        document.getElementById(
-          "viewingStudentName"
-        ).textContent = `Logbook: ${studentData.name}`;
+        document.getElementById("viewingStudentName").textContent =
+          `Logbook: ${studentData.name}`;
         const container = document.getElementById("studentLogsContainer");
         container.innerHTML = "";
 
@@ -332,11 +332,11 @@
           div.innerHTML = `
               <div class="log-header">
                   <span class="log-date">📅 ${log.date} (${log.time_in} - ${
-            log.time_out
-          })</span>
+                    log.time_out
+                  })</span>
                   <span class="status-badge status-${log.status}">${
-            log.status
-          }</span>
+                    log.status
+                  }</span>
               </div>
               <div style="margin-bottom:10px; line-height:1.5;"><strong>Activity:</strong><br>${
                 log.activities
@@ -437,7 +437,7 @@
             const a = document.createElement("a");
             a.href = downloadUrl;
             const student = uniqueStudents.find(
-              (s) => s.id === currentViewingStudentId
+              (s) => s.id === currentViewingStudentId,
             );
             const safeName = student
               ? student.name.replace(/\s+/g, "_")
